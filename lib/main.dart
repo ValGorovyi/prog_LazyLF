@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/authW/authW.dart';
+import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart';
 
 void main() {
   runApp(const UpperThemeW());
@@ -7,8 +8,6 @@ void main() {
 
 class UpperThemeW extends StatelessWidget {
   const UpperThemeW({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,10 +43,35 @@ class UpperThemeW extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: AuthorizW(),
-      // routes: {
-      //   '/': (BuildContext context) => AuthorizW(),
-      //   // '/main' : () => {}(),
-      // },
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '': (BuildContext context) => AuthorizW(),
+        '/main': (BuildContext context) => MainScreenW(),
+      },
+      onGenerateRoute: (RouteSettings setting) {
+        return MaterialPageRoute<void>(
+          builder: (context) {
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('navigation error. 404. not found'),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Text('To back page'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

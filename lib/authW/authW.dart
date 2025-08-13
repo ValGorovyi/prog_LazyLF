@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart';
 
 class AuthorizW extends StatefulWidget {
   const AuthorizW({super.key});
@@ -30,6 +31,13 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
     final login = loginTextController.text;
     final passw = passworldTextController.text;
     if (login == 'admin' && passw == 'admin') {
+      // bad pracktick
+      // Navigator.of(
+      //   context,
+      // ).push(MaterialPageRoute(builder: (context) => MainScreenW()));
+
+      Navigator.of(context).pushReplacementNamed('/main'); // no back
+
       errorText = null;
     } else {
       errorText = 'Error in login or passworld';
@@ -48,16 +56,15 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
           Text('E-mail'),
           TextField(
             controller: loginTextController,
-            decoration: InputDecoration(
-              labelText: 'e-mail',
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red),
-              ),
-            ),
+            decoration: InputDecoration(labelText: 'e-mail'),
           ),
           SizedBox(height: 18),
           Text('Passworld'),
-          TextField(obscureText: true, controller: passworldTextController),
+          TextField(
+            obscureText: true,
+            decoration: InputDecoration(labelText: 'passworld'),
+            controller: passworldTextController,
+          ),
           SizedBox(height: 15),
           if (errorText != null) ...[
             Text('$errorText', style: TextStyle(color: Colors.red)),
