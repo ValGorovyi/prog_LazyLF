@@ -23,8 +23,8 @@ class AuthorizBuilder extends StatefulWidget {
 }
 
 class _AuthorizBuilderState extends State<AuthorizBuilder> {
-  final loginTextController = TextEditingController();
-  final passworldTextController = TextEditingController();
+  final loginTextController = TextEditingController(text: 'admin');
+  final passworldTextController = TextEditingController(text: 'admin');
   String? errorText;
 
   void _auth() {
@@ -52,13 +52,13 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 18),
+          SizedBox(height: 12),
           Text('E-mail'),
           TextField(
             controller: loginTextController,
             decoration: InputDecoration(labelText: 'e-mail'),
           ),
-          SizedBox(height: 18),
+          SizedBox(height: 12),
           Text('Passworld'),
           TextField(
             obscureText: true,
@@ -68,7 +68,7 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
           SizedBox(height: 15),
           if (errorText != null) ...[
             Text('$errorText', style: TextStyle(color: Colors.red)),
-            SizedBox(height: 15),
+            SizedBox(height: 12),
           ],
 
           Row(
@@ -91,7 +91,7 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
             'Stream or download all our movies, anytime. On any screen or device, anywhere. From cult classics to modern masterpieces. From the greatest ever directors, to the greatest new directors. Films from everywhere on earth.',
           ),
           TextButton(onPressed: () {}, child: Text('Registration')),
-          SizedBox(height: 25),
+          SizedBox(height: 20),
           Text(
             'Read a print magazine devoted to the art and the culture of cinema. Created, prepared, and published by MUBI. Receive two beautiful issues a year. Available worldwide with a magazine subscription.',
           ),

@@ -38,6 +38,11 @@ class UpperThemeW extends StatelessWidget {
             ),
           ),
         ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: const Color.fromARGB(255, 4, 49, 126),
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey,
+        ),
         textTheme: TextTheme(displayMedium: TextStyle(fontSize: 16)),
 
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
