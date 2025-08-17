@@ -47,10 +47,10 @@ class UpperThemeW extends StatelessWidget {
 
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: AuthorizW(),
+      // home: AuthorizW(),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '': (BuildContext context) => AuthorizW(),
+        '/': (BuildContext context) => AuthorizW(),
         '/main': (BuildContext context) => MainScreenW(),
       },
       onGenerateRoute: (RouteSettings setting) {

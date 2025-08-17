@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prog_lazy_f/cardsList/cardsList.dart';
 
 class MainScreenW extends StatefulWidget {
   const MainScreenW({super.key});
@@ -16,10 +17,10 @@ class _MainScreenW extends State<MainScreenW> {
     });
   }
 
-  static const List<Widget> _ontaperWidget = [
-    Text('Home'),
-    Text('News'),
-    Text('About us'),
+  static final List<Widget> _ontaperWidget = [
+    MoviCards(),
+    const Text('News'),
+    const Text('About us'),
   ];
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _MainScreenW extends State<MainScreenW> {
         currentIndex: _selectedIndex,
         onTap: (index) => onTapItemBar(index),
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Movi'),
           BottomNavigationBarItem(icon: Icon(Icons.newspaper), label: 'News'),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_brightness),
