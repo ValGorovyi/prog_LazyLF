@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/authW/authW.dart';
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart';
+import 'package:prog_lazy_f/movieCardW/movieCardW.dart';
 
 void main() {
   runApp(const UpperThemeW());
@@ -52,6 +53,13 @@ class UpperThemeW extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => AuthorizW(),
         '/main': (BuildContext context) => MainScreenW(),
+        '/main/movieid': (BuildContext context) {
+          final arguments = ModalRoute.of(context)?.settings.arguments;
+          if (arguments is int)
+            return MovieCarsW(id: arguments);
+          else
+            return MovieCarsW(id: 1);
+        },
       },
       onGenerateRoute: (RouteSettings setting) {
         return MaterialPageRoute<void>(

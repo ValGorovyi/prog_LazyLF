@@ -17,16 +17,20 @@ class _MainScreenW extends State<MainScreenW> {
     });
   }
 
-  static final List<Widget> _ontaperWidget = [
-    MoviCards(),
-    const Text('News'),
-    const Text('About us'),
-  ];
+  // static final List<Widget> _ontaperWidget = [
+  //   MovieCards(),
+  //   const Text('News'),
+  //   const Text('About us'),
+  // ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('TMDB')),
-      body: Center(child: _ontaperWidget[_selectedIndex]),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [MovieCards(), const Text('News'), const Text('About us')],
+      ),
+      // body: Center(child: _ontaperWidget[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => onTapItemBar(index),
