@@ -27,6 +27,7 @@ class _MovieCarsWState extends State<MovieCarsW> {
             SizedBox(height: 20),
 
             DetailsCatdW(),
+            ActorScrolingW(),
           ],
         ),
       ),
@@ -153,6 +154,83 @@ class DetailsCatdW extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+          SizedBox(height: 18),
+        ],
+      ),
+    );
+  }
+}
+
+class ActorScrolingW extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: Colors.white70,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text('Series Cart'),
+          ),
+          SizedBox(
+            height: 300,
+            child: Scrollbar(
+              child: ListView.builder(
+                itemCount: 20,
+                itemExtent: 120,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, index) {
+                  return Padding(
+                    padding: EdgeInsetsGeometry.all(8),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300,
+
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.black12),
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        clipBehavior: Clip.hardEdge,
+                        child: Column(
+                          children: [
+                            Image(image: AssetImage(ImagesWidg.actor)),
+                            Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Column(
+                                children: [
+                                  Text('Manoj Kumar', maxLines: 1),
+                                  Text(
+                                    'Kumar was honoured with the Padma Shri in 1992 and Dadasaheb Phalke Award in 2015 by the Government of India for his contribution to Indian cinema and arts.',
+                                    maxLines: 4,
+                                  ),
+                                  Text('Episots: 4', maxLines: 1),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 2),
+            child: TextButton(
+              onPressed: () {},
+              child: Text('Full card & crew'),
+            ),
           ),
         ],
       ),
