@@ -1,52 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:prog_lazy_f/authW/authModel.dart';
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart';
 
-class AuthorizW extends StatefulWidget {
-  const AuthorizW({super.key});
-  @override
-  State<AuthorizW> createState() => _AuthorizW();
-}
-
-class _AuthorizW extends State<AuthorizW> {
+class AuthorizW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Log in your account')),
-      body: AuthorizBuilder(),
-    );
-  }
-}
-
-class AuthorizBuilder extends StatefulWidget {
-  @override
-  State<AuthorizBuilder> createState() => _AuthorizBuilderState();
-}
-
-class _AuthorizBuilderState extends State<AuthorizBuilder> {
-  final loginTextController = TextEditingController(text: 'admin');
-  final passworldTextController = TextEditingController(text: 'admin');
-  String? errorText;
-
-  void _auth() {
-    final login = loginTextController.text;
-    final passw = passworldTextController.text;
-    if (login == 'admin' && passw == 'admin') {
-      // bad pracktick
-      // Navigator.of(
-      //   context,
-      // ).push(MaterialPageRoute(builder: (context) => MainScreenW()));
-
-      Navigator.of(context).pushReplacementNamed('/main'); // no back
-
-      errorText = null;
-    } else {
-      errorText = 'Error in login or passworld';
-    }
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    final model = AuthInherit.read(context)?.model;
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 16),
       child: Column(
@@ -55,7 +14,7 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
           SizedBox(height: 12),
           Text('E-mail'),
           TextField(
-            controller: loginTextController,
+            controller: model?.loginTextController,
             decoration: InputDecoration(labelText: 'e-mail'),
           ),
           SizedBox(height: 12),
@@ -63,21 +22,14 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
           TextField(
             obscureText: true,
             decoration: InputDecoration(labelText: 'passworld'),
-            controller: passworldTextController,
+            controller: model?.passworldTextController,
           ),
           SizedBox(height: 15),
-          if (errorText != null) ...[
-            Text('$errorText', style: TextStyle(color: Colors.red)),
-            SizedBox(height: 12),
-          ],
+          _errorMessageWidget(),
 
           Row(
             children: [
-              ElevatedButton(
-                onPressed: _auth,
-                child: Text('Login'),
-                style: Theme.of(context).elevatedButtonTheme.style,
-              ),
+              _elevatedLoginButton(),
               SizedBox(width: 30),
               TextButton(
                 onPressed: () {},
@@ -98,6 +50,36 @@ class _AuthorizBuilderState extends State<AuthorizBuilder> {
           TextButton(onPressed: () {}, child: Text('Veryfy e-mail')),
         ],
       ),
+    );
+  }
+}
+
+class _errorMessageWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final errorMessage = AuthInherit.watch(context)?.model.errorMessage;
+    final errWidget = errorMessage == null
+        ? SizedBox.shrink()
+        : Text(errorMessage, style: TextStyle(color: Colors.red));
+    if (errorMessage == null) return SizedBox.shrink();
+    return Padding(
+      padding: EdgeInsetsGeometry.only(bottom: 20),
+      child: Text(errorMessage),
+    );
+  }
+}
+
+class _elevatedLoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final model = AuthInherit.watch(context)?.model;
+    final onPressedW = model?.canStartAuth == true
+        ? model?.auth(context)
+        : null;
+    return ElevatedButton(
+      onPressed: () => onPressedW,
+      style: Theme.of(context).elevatedButtonTheme.style,
+      child: Text('Login'),
     );
   }
 }

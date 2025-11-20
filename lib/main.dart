@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prog_lazy_f/authW/authModel.dart';
 import 'package:prog_lazy_f/authW/authW.dart';
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart';
 import 'package:prog_lazy_f/movieCardW/movieCardW.dart';
@@ -51,7 +52,8 @@ class UpperThemeW extends StatelessWidget {
       // home: AuthorizW(),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => AuthorizW(),
+        '/': (BuildContext context) =>
+            AuthInherit(model: AuthModel(), child: AuthorizW()),
         '/main': (BuildContext context) => MainScreenW(),
         '/main/movieid': (BuildContext context) {
           final arguments = ModalRoute.of(context)?.settings.arguments;
