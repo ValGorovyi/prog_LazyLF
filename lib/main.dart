@@ -50,7 +50,7 @@ class UpperW extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: AuthorizW(),
-      initialRoute: mainNavigation.initialRoute(false),
+      initialRoute: mainNavigation.initialRoute(model.isAuth),
       routes: mainNavigation.routes,
       onGenerateRoute: mainNavigation.onGererateRoutes,
       // (RouteSettings setting) {
