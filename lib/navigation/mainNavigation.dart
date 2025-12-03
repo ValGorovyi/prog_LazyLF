@@ -6,16 +6,16 @@ import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
 import 'package:prog_lazy_f/movieCardW/movieCardW.dart' show MovieCarsW;
 
 abstract class NavigationRoutesNames {
-  static const mainRoute = '/main';
-  static const authRoute = '/auth';
-  static const idRoute = 'id';
+  static const mainRoute = '/';
+  static const authRoute = 'auth';
+  static const idRoute = '/id';
 }
 
 class MainNavigation {
   final routes = <String, Widget Function(BuildContext)>{
-    '/auth': (BuildContext context) =>
+    NavigationRoutesNames.authRoute: (BuildContext context) =>
         AuthInherit(model: AuthModel(), child: AuthorizW()),
-    '/main': (BuildContext context) => MainScreenW(),
+    NavigationRoutesNames.mainRoute: (BuildContext context) => MainScreenW(),
     // '/main/movieid': (BuildContext context) {
     //   final arguments = ModalRoute.of(context)?.settings.arguments;
     //   if (arguments is int) {

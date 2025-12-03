@@ -22,7 +22,7 @@ class AuthorizW extends StatelessWidget {
             Text('Passworld'),
             TextField(
               obscureText: true,
-              decoration: InputDecoration(labelText: 'passworld'),
+              decoration: InputDecoration(labelText: 'password'),
               controller: model?.passworldTextController,
             ),
             SizedBox(height: 15),
@@ -84,7 +84,7 @@ class _elevatedLoginButton extends StatelessWidget {
             width: 15,
             child: CircularProgressIndicator(strokeWidth: 2),
           )
-        : const Text('Logjjin');
+        : const Text('Login');
     return ElevatedButton(
       onPressed: onPressedW,
       style: Theme.of(context).elevatedButtonTheme.style,

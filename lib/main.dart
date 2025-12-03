@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
 
-void main() {
-  runApp(const UpperW());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final model = AppModel();
+  await model.checkAuth();
+  runApp(UpperW(model: model));
 }
 
 class UpperW extends StatelessWidget {

@@ -39,7 +39,7 @@ class AuthModel extends ChangeNotifier {
       return;
     }
     await _sessinDataProvider.setSessionId(sessionId);
-    Navigator.of(context).pushNamed(NavigationRoutesNames.mainRoute);
+    Navigator.of(context).pushReplacementNamed(NavigationRoutesNames.mainRoute);
   }
 
   bool _isAuthProgress = false;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/cardsList/cardsList.dart';
+import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
 
 class MainScreenW extends StatefulWidget {
   const MainScreenW({super.key});
@@ -25,7 +26,16 @@ class _MainScreenW extends State<MainScreenW> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('TMDB')),
+      appBar: AppBar(
+        title: Text('TMDB'),
+        actions: [
+          IconButton(
+            // demo code
+            onPressed: () => SessionDataProvider().setSessionId(null),
+            icon: Icon(Icons.search),
+          ),
+        ],
+      ),
       body: IndexedStack(
         index: _selectedIndex,
         children: [MovieCards(), const Text('News'), const Text('About us')],
