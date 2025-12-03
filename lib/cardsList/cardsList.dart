@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/imagesW/imagesForW.dart';
+import 'package:prog_lazy_f/navigation/mainNavigation.dart'
+    show NavigationRoutesNames;
 
 class MovieCards extends StatefulWidget {
   const MovieCards({super.key});
@@ -158,7 +160,9 @@ class _MovieCardsState extends State<MovieCards> {
 
   void tabToMovie(index) {
     final id = _moviesDemoList[index].id;
-    Navigator.of(context).pushNamed('/main/movieid', arguments: id);
+    Navigator.of(
+      context,
+    ).pushNamed(NavigationRoutesNames.idRoute, arguments: id);
   }
 
   final _searchController = TextEditingController();

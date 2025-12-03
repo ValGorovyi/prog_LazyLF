@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/authW/authModel.dart';
-import 'package:prog_lazy_f/authW/authW.dart';
-import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart';
-import 'package:prog_lazy_f/movieCardW/movieCardW.dart';
+import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
+import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
 
 void main() {
-  runApp(const UpperThemeW());
+  runApp(const UpperW());
 }
 
-class UpperThemeW extends StatelessWidget {
-  const UpperThemeW({super.key});
+class UpperW extends StatelessWidget {
+  final AppModel model;
+  static final mainNavigation = MainNavigation();
+  const UpperW({super.key, required this.model});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,43 +50,33 @@ class UpperThemeW extends StatelessWidget {
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: AuthorizW(),
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) =>
-            AuthInherit(model: AuthModel(), child: AuthorizW()),
-        '/main': (BuildContext context) => MainScreenW(),
-        '/main/movieid': (BuildContext context) {
-          final arguments = ModalRoute.of(context)?.settings.arguments;
-          if (arguments is int)
-            return MovieCarsW(id: arguments);
-          else
-            return MovieCarsW(id: 1);
-        },
-      },
-      onGenerateRoute: (RouteSettings setting) {
-        return MaterialPageRoute<void>(
-          builder: (context) {
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('navigation error. 404. not found'),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (Navigator.of(context).canPop()) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: Text('To back page'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+      initialRoute: mainNavigation.initialRoute(false),
+      routes: mainNavigation.routes,
+      onGenerateRoute: mainNavigation.onGererateRoutes,
+      // (RouteSettings setting) {
+      //   return MaterialPageRoute<void>(
+      //     builder: (context) {
+      //       return Scaffold(
+      //         body: Center(
+      //           child: Column(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               Text('navigation error. 404. not found'),
+      //               ElevatedButton(
+      //                 onPressed: () {
+      //                   if (Navigator.of(context).canPop()) {
+      //                     Navigator.of(context).pop();
+      //                   }
+      //                 },
+      //                 child: Text('To back page'),
+      //               ),
+      //             ],
+      //           ),
+      //         ),
+      //       );
+      //     },
+      //   );
+      // },
     );
   }
 }
