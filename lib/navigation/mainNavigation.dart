@@ -4,6 +4,8 @@ import 'package:prog_lazy_f/authW/authModel.dart' show AuthInherit, AuthModel;
 import 'package:prog_lazy_f/authW/authW.dart' show AuthorizW;
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
 import 'package:prog_lazy_f/movieCardW/movieCardW.dart' show MovieCarsW;
+import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
+    show UniversalInheritNitifier;
 
 abstract class NavigationRoutesNames {
   static const mainRoute = '/';
@@ -14,7 +16,7 @@ abstract class NavigationRoutesNames {
 class MainNavigation {
   final routes = <String, Widget Function(BuildContext)>{
     NavigationRoutesNames.authRoute: (BuildContext context) =>
-        AuthInherit(model: AuthModel(), child: AuthorizW()),
+        UniversalInheritNitifier(model: AuthModel(), child: AuthorizW()),
     NavigationRoutesNames.mainRoute: (BuildContext context) => MainScreenW(),
     // '/main/movieid': (BuildContext context) {
     //   final arguments = ModalRoute.of(context)?.settings.arguments;

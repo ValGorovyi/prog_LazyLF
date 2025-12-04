@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/authW/authModel.dart';
+import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart';
 
 class AuthorizW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final model = AuthInherit.read(context)?.model;
+    final model = UniversalInheritNitifier.read<AuthModel>(context);
     return Scaffold(
       appBar: AppBar(title: Text('Log In')),
       body: Padding(
@@ -59,7 +60,9 @@ class AuthorizW extends StatelessWidget {
 class _errorMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final errorMessage = AuthInherit.watch(context)?.model.errorMessage;
+    final errorMessage = UniversalInheritNitifier.watch<AuthModel>(
+      context,
+    )?.errorMessage;
     final errWidget = errorMessage == null
         ? SizedBox.shrink()
         : Text(errorMessage, style: TextStyle(color: Colors.red));
@@ -74,7 +77,7 @@ class _errorMessageWidget extends StatelessWidget {
 class _elevatedLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final model = AuthInherit.watch(context)?.model;
+    final model = UniversalInheritNitifier.watch<AuthModel>(context);
     final onPressedW = model?.canStartAuth == true
         ? () => model!.auth(context)
         : null;
