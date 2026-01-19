@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/domain/apiClient/apiClient.dart' show ApiClient;
+import 'package:prog_lazy_f/domain/apiClient/apiClient.dart'
+    show ApiClient, ApiClientExeption, ApiClientExeptionType;
 import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'
     show NavigationRoutesNames;
@@ -25,14 +26,27 @@ class AuthModel extends ChangeNotifier {
     String? sessionId;
     try {
       sessionId = await _apiClient.auth(username: login, password: password);
-    } catch (e) {
-      _errorMessage = 'error catch';
+    } on ApiClientExeption catch (e) {
+      switch (e.type) {
+        case ApiClientExeptionType.Network:
+          _errorMessage = 'Network error. Wi-fi???';
+          break;
+        case ApiClientExeptionType.Auth:
+          _errorMessage = 'Login or password error';
+          break;
+        case ApiClientExeptionType.Other:
+          _errorMessage = 'error. repeat pleace';
+          break;
+      }
+    } catch (er) {
+      _errorMessage = 'error catch. repeat';
     }
+
+    _isAuthProgress = false;
     if (_errorMessage != null) {
       notifyListeners();
       return;
     }
-    _isAuthProgress = false;
     if (sessionId == null) {
       _errorMessage = 'unknow error';
       notifyListeners();
