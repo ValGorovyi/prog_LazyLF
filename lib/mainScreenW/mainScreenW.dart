@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/cardsList/cardsList.dart';
+import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
+    show movieCardsListModel;
 import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
+import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
+    show UniversalInheritNitifier;
 
 class MainScreenW extends StatefulWidget {
   const MainScreenW({super.key});
@@ -18,6 +22,13 @@ class _MainScreenW extends State<MainScreenW> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    movieListM.loadMovies();
+  }
+
+  final movieListM = movieCardsListModel();
   // static final List<Widget> _ontaperWidget = [
   //   MovieCards(),
   //   const Text('News'),
@@ -38,7 +49,14 @@ class _MainScreenW extends State<MainScreenW> {
       ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: [MovieCards(), const Text('News'), const Text('About us')],
+        children: [
+          UniversalInheritNitifier(
+            model: movieListM,
+            child: const MovieCards(),
+          ),
+          const Text('News'),
+          const Text('About us'),
+        ],
       ),
       // body: Center(child: _ontaperWidget[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(

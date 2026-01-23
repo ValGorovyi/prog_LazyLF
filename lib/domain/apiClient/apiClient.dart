@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
+    show popularMoviesResponceType;
+
 enum ApiClientExeptionType { Network, Auth, Other }
 
 class ApiClientExeption implements Exception {
@@ -249,6 +252,23 @@ class ApiClient {
     } catch (e) {
       throw ApiClientExeption(ApiClientExeptionType.Other);
     }
+  }
+
+  Future<popularMoviesResponceType> popularMovie(
+    int page,
+    String language,
+  ) async {
+    final parser = (dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final responce = popularMoviesResponceType.fromJson(jsonMap);
+      return responce;
+    };
+    final result = _getUniversal('/movie/popular', parser, <String, dynamic>{
+      'api_key': _apiKey,
+      'page': page.toString(),
+      'language': language,
+    });
+    return result;
   }
 }
 
