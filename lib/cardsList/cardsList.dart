@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show movieCardsListModel;
+import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
 
@@ -45,6 +47,8 @@ class MovieCards extends StatelessWidget {
 
           itemBuilder: (BuildContext context, int index) {
             final oneMovie = model.movies[index];
+            final movieImageSrc = oneMovie.posterPath;
+            final movieReleaseDate = oneMovie.releaseDate;
             return Padding(
               padding: EdgeInsetsGeometry.symmetric(
                 horizontal: 16,
@@ -69,6 +73,12 @@ class MovieCards extends StatelessWidget {
                     child: Row(
                       children: [
                         // Image(image: AssetImage(oneMovie.imageMovie)),
+                        movieImageSrc != null
+                            ? Image.network(
+                                ApiClient.imageUrl(movieImageSrc),
+                                width: 95,
+                              )
+                            : const SizedBox.shrink(),
                         SizedBox(width: 10),
                         Expanded(
                           child: Column(
@@ -83,7 +93,7 @@ class MovieCards extends StatelessWidget {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                oneMovie.releaseDate?.toString() ?? '/.\.',
+                                model.stringFormatDate(movieReleaseDate),
                                 style: TextStyle(color: Colors.black45),
                               ),
                               SizedBox(height: 20),

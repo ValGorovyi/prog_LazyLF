@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show
+        GlobalMaterialLocalizations,
+        GlobalWidgetsLocalizations,
+        GlobalCupertinoLocalizations;
 import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
 
@@ -16,6 +21,15 @@ class UpperW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'), // English
+        Locale('ru'),
+      ],
       theme: ThemeData(
         appBarTheme: AppBarTheme(
           backgroundColor: const Color.fromARGB(255, 4, 49, 126),
@@ -52,34 +66,11 @@ class UpperW extends StatelessWidget {
 
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+
       // home: AuthorizW(),
       initialRoute: mainNavigation.initialRoute(model.isAuth),
       routes: mainNavigation.routes,
       onGenerateRoute: mainNavigation.onGererateRoutes,
-      // (RouteSettings setting) {
-      //   return MaterialPageRoute<void>(
-      //     builder: (context) {
-      //       return Scaffold(
-      //         body: Center(
-      //           child: Column(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-      //               Text('navigation error. 404. not found'),
-      //               ElevatedButton(
-      //                 onPressed: () {
-      //                   if (Navigator.of(context).canPop()) {
-      //                     Navigator.of(context).pop();
-      //                   }
-      //                 },
-      //                 child: Text('To back page'),
-      //               ),
-      //             ],
-      //           ),
-      //         ),
-      //       );
-      //     },
-      //   );
-      // },
     );
   }
 }

@@ -22,18 +22,15 @@ class _MainScreenW extends State<MainScreenW> {
     });
   }
 
+  final movieListM = movieCardsListModel();
+
   @override
-  void initState() {
-    super.initState();
-    movieListM.loadMovies();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    movieListM.setupLocate(context);
+    // movieListM.loadMovies();
   }
 
-  final movieListM = movieCardsListModel();
-  // static final List<Widget> _ontaperWidget = [
-  //   MovieCards(),
-  //   const Text('News'),
-  //   const Text('About us'),
-  // ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

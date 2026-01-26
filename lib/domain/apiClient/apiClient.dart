@@ -17,6 +17,10 @@ class ApiClient {
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = 'c0229fa065fb8b73cb55c1fae3cd1a18';
 
+  static String imageUrl(String pathSrc) {
+    return _imageUrl + pathSrc;
+  }
+
   Uri _createUri(String path, [Map<String, dynamic>? parameters]) {
     final myUri = Uri.parse('$_host$path');
     if (parameters != null) {
