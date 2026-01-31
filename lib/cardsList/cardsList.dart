@@ -49,6 +49,7 @@ class MovieCards extends StatelessWidget {
             final oneMovie = model.movies[index];
             final movieImageSrc = oneMovie.posterPath;
             final movieReleaseDate = oneMovie.releaseDate;
+            model.showMovieAtIndex(index);
             return Padding(
               padding: EdgeInsetsGeometry.symmetric(
                 horizontal: 16,
@@ -125,6 +126,7 @@ class MovieCards extends StatelessWidget {
         Padding(
           padding: EdgeInsetsGeometry.only(top: 4),
           child: TextField(
+            onChanged: model.searchMovie,
             decoration: InputDecoration(
               labelText: '...',
               filled: true,
