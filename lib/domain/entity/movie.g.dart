@@ -18,7 +18,7 @@ MovieType _$MovieTypeFromJson(Map<String, dynamic> json) => MovieType(
   overview: json['overview'] as String,
   popularity: (json['popularity'] as num).toInt(),
   posterPath: json['poster_path'] as String?,
-  releaseDate: MovieType._readDateFromResp(json['release_date'] as String?),
+  releaseDate: parseMovieDateFromResp(json['release_date'] as String?),
   title: json['title'] as String,
   video: json['video'] as bool,
   voteAverage: (json['vote_average'] as num).toInt(),

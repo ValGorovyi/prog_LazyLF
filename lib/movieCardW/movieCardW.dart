@@ -1,22 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/imagesW/imagesForW.dart';
+import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart';
+import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
+    show UniversalInheritNitifier;
 
-class MovieCarsW extends StatefulWidget {
-  final int id;
-
-  MovieCarsW({super.key, required this.id});
+class MovieCardW extends StatefulWidget {
+  const MovieCardW({super.key});
 
   @override
-  State<MovieCarsW> createState() => _MovieCarsWState();
+  State<MovieCardW> createState() => _MovieCardWState();
 }
 
-class _MovieCarsWState extends State<MovieCarsW> {
+class _MovieCardWState extends State<MovieCardW> {
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    UniversalInheritNitifier.read<MovieCardDetailsModel>(
+      context,
+    )?.setupLocate(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 73, 88, 96),
 
-      appBar: AppBar(title: Text('Tony Hawk undeground 2')),
+      appBar: AppBar(title: _AppTitleInDetailsW()),
       body: ColoredBox(
         color: Color.fromARGB(24, 25, 27, 1),
         child: ListView(
@@ -32,6 +42,16 @@ class _MovieCarsWState extends State<MovieCarsW> {
         ),
       ),
     );
+  }
+}
+
+class _AppTitleInDetailsW extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+    return Text(model?.movieDetails?.title ?? 'Loading...');
   }
 }
 
@@ -79,11 +99,6 @@ class AboutMovie extends StatelessWidget {
                   ),
                 ],
               ),
-              // children: [
-              //   Text('Tony Hawk undeground 2'),
-              //   SizedBox(width: 10),
-              //   Text('Film duration: 2 : 15'),
-              // ],
             ),
           ],
         ),

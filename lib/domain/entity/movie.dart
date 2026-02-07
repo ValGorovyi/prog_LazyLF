@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:prog_lazy_f/domain/entity/movieDateParser.dart'
+    show parseMovieDateFromResp;
 
 part 'movie.g.dart';
 
@@ -13,7 +15,7 @@ class MovieType {
   final String overview;
   final int popularity;
   final String? posterPath;
-  @JsonKey(fromJson: _readDateFromResp)
+  @JsonKey(fromJson: parseMovieDateFromResp)
   final DateTime? releaseDate;
   final String title;
   final bool video;
@@ -40,9 +42,4 @@ class MovieType {
   factory MovieType.fromJson(Map<String, dynamic> json) =>
       _$MovieTypeFromJson(json);
   Map<String, dynamic> toJson() => _$MovieTypeToJson(this);
-
-  static DateTime? _readDateFromResp(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
 }

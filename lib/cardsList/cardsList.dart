@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show movieCardsListModel;
 import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';

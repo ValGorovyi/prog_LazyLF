@@ -48,7 +48,8 @@ class _MainScreenW extends State<MainScreenW> {
         index: _selectedIndex,
         children: [
           UniversalInheritNitifier(
-            model: movieListM,
+            create: () => movieListM,
+            isManagingModel: false,
             child: const MovieCards(),
           ),
           const Text('News'),
