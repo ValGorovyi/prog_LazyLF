@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';
 import 'package:prog_lazy_f/imagesW/imagesForW.dart';
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart';
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
@@ -29,17 +30,7 @@ class _MovieCardWState extends State<MovieCardW> {
       appBar: AppBar(title: _AppTitleInDetailsW()),
       body: ColoredBox(
         color: Color.fromARGB(24, 25, 27, 1),
-        child: ListView(
-          children: [
-            _TopPosterW(),
-            SizedBox(height: 20),
-            AboutMovie(),
-            SizedBox(height: 20),
-
-            DetailsCatdW(),
-            ActorScrolingW(),
-          ],
-        ),
+        child: _BodyCardW(),
       ),
     );
   }
@@ -58,19 +49,28 @@ class _AppTitleInDetailsW extends StatelessWidget {
 class _TopPosterW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image(
-          image: AssetImage(ImagesWidg.bigMovie),
-          width: MediaQuery.of(context).size.width,
-        ),
-        Positioned(
-          top: 20,
-          left: 20,
-          bottom: 20,
-          child: Image(image: AssetImage(ImagesWidg.smalMovie)),
-        ),
-      ],
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+    final backdropPath = model?.movieDetails?.backdropPath;
+    final posterPath = model?.movieDetails?.posterPath;
+    return AspectRatio(
+      aspectRatio: 390 / 219,
+      child: Stack(
+        children: [
+          backdropPath != null
+              ? Image.network(ApiClient.imageUrl(backdropPath))
+              : SizedBox.shrink(),
+          Positioned(
+            top: 20,
+            left: 20,
+            bottom: 20,
+            child: posterPath != null
+                ? Image.network(ApiClient.imageUrl(posterPath))
+                : SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -78,6 +78,12 @@ class _TopPosterW extends StatelessWidget {
 class AboutMovie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+    var year = model?.movieDetails?.releaseDate?.year.toString();
+    year = year != null ? ' ( $year )' : '000';
+
     return Column(
       children: [
         Row(
@@ -89,12 +95,12 @@ class AboutMovie extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: 'Tony Hawk undeground 2',
+                    text: model?.movieDetails?.title ?? '',
                     style: TextStyle(color: TextCardWColor.mainColor),
                   ),
                   WidgetSpan(child: SizedBox(width: 10)),
                   TextSpan(
-                    text: 'Film duration: 2 : 15',
+                    text: year,
                     style: TextStyle(color: TextCardWColor.secondColor),
                   ),
                 ],
@@ -249,6 +255,30 @@ class ActorScrolingW extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BodyCardW extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+    final movieDetails = model?.movieDetails;
+    if (movieDetails == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return ListView(
+      children: [
+        _TopPosterW(),
+        SizedBox(height: 20),
+        AboutMovie(),
+        SizedBox(height: 20),
+
+        DetailsCatdW(),
+        ActorScrolingW(),
+      ],
     );
   }
 }

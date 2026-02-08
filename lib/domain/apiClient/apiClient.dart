@@ -177,8 +177,6 @@ class ApiClient {
   }
 
   void _validateResponce(HttpClientResponse responce, dynamic json) {
-    print(responce.statusCode);
-    // print(json);
     if (responce.statusCode == 401) {
       final dynamic statusCodeInt = json['status_code'];
       final code = statusCodeInt is int ? statusCodeInt : 0;
@@ -202,18 +200,13 @@ class ApiClient {
       final dynamic json = await responce.jsonDecode();
 
       _validateResponce(responce, json);
-      print('!!!!!!!!!!!!!!!!!!!!!!!');
-      print(json);
       final result = parser(json);
-      print('result >>>>>>>>>>>>');
-      print(result);
       return result;
     } on SocketException {
       throw ApiClientExeption(ApiClientExeptionType.Network);
     } on ApiClientExeption {
       rethrow;
     } catch (e) {
-      print(e);
       throw ApiClientExeption(ApiClientExeptionType.Other);
     }
   }
