@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';
 import 'package:prog_lazy_f/imagesW/imagesForW.dart';
+import 'package:prog_lazy_f/movieCardW/circularProgressIndicator/circularProgressIndicator.dart'
+    show CircularProgressCustom;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart';
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
@@ -81,8 +83,32 @@ class AboutMovie extends StatelessWidget {
     final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
       context,
     );
+    if (model == null) return const SizedBox.shrink();
     var year = model?.movieDetails?.releaseDate?.year.toString();
     year = year != null ? ' ( $year )' : '000';
+    final listOfTextDetails = <String>[];
+
+    final reliseOfDate = model.movieDetails?.releaseDate;
+    if (reliseOfDate != null) {
+      listOfTextDetails.add(model.stringFromDate(reliseOfDate));
+    }
+    final productCountries = model.movieDetails?.productionCountries;
+    if (productCountries != null && productCountries.isNotEmpty) {
+      listOfTextDetails.add('(${productCountries.first.iso})');
+    }
+    final runtime = model.movieDetails?.runtime ?? 0;
+    final durationOfMovie = Duration(minutes: runtime);
+    final hours = durationOfMovie.inHours;
+    final minutes = durationOfMovie.inMinutes.remainder(60);
+    listOfTextDetails.add('${hours} h ${minutes} m');
+    final genres = model.movieDetails?.genres;
+    if (genres != null && genres.isNotEmpty) {
+      var listOfGenresName = <String>[];
+      for (var genre in genres) {
+        listOfGenresName.add(genre.name);
+      }
+      listOfTextDetails.add(listOfGenresName.join(', '));
+    }
 
     return Column(
       children: [
@@ -95,7 +121,7 @@ class AboutMovie extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: model?.movieDetails?.title ?? '',
+                    text: model.movieDetails?.title ?? '',
                     style: TextStyle(color: TextCardWColor.mainColor),
                   ),
                   WidgetSpan(child: SizedBox(width: 10)),
@@ -110,24 +136,38 @@ class AboutMovie extends StatelessWidget {
         ),
         SizedBox(height: 20),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Icon(
-              Icons.data_thresholding_outlined,
-              semanticLabel: 'Statistick - 82%',
+            Row(
+              children: [
+                CircularProgressCustom(),
+                SizedBox(width: 8),
+                Text('Users score'),
+              ],
             ),
-            Icon(Icons.play_arrow_rounded, semanticLabel: 'Play triler'),
+            const Row(
+              children: [
+                Icon(
+                  Icons.play_arrow_rounded,
+                  semanticLabel: 'Play triler',
+                  size: 50,
+                ),
+                SizedBox(width: 8),
+                Text('Play triler'),
+              ],
+            ),
           ],
         ),
-        SizedBox(height: 25),
+        SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: Text(
-            'Anthony Frank Hawk (born May 12, 1968), nicknamed Birdman, is an American professional skateboarder, entrepreneur, and the owner of the skateboard company Birdhouse.',
+            listOfTextDetails.join(' '),
             style: TextStyle(color: TextCardWColor.mainColor),
           ),
         ),
-        SizedBox(height: 60),
+
+        SizedBox(height: 12),
       ],
     );
   }
@@ -136,12 +176,19 @@ class AboutMovie extends StatelessWidget {
 class DetailsCatdW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+
+    final overview = model?.movieDetails?.overview ?? '';
+
     return Padding(
-      padding: const EdgeInsets.only(left: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Overview', style: TextStyle(color: TextCardWColor.mainColor)),
+          Text(overview),
           SizedBox(height: 40),
           Row(
             children: [

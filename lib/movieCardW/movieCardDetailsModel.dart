@@ -23,6 +23,10 @@ class MovieCardDetailsModel extends ChangeNotifier {
     await loadDetails();
   }
 
+  String stringFromDate(DateTime? date) {
+    return date != null ? _dateFormat.format(date) : '';
+  }
+
   Future<void> loadDetails() async {
     _MovieDetailsType = await _apiCl.movieDetails(movieId, _locale);
     notifyListeners();
