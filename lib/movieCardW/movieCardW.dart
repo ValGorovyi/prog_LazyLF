@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';
+import 'package:prog_lazy_f/domain/entity/movieDetailsCredits.dart';
 import 'package:prog_lazy_f/imagesW/imagesForW.dart';
 import 'package:prog_lazy_f/movieCardW/circularProgressIndicator/circularProgressIndicator.dart'
     show CircularProgressCustom;
@@ -34,6 +35,30 @@ class _MovieCardWState extends State<MovieCardW> {
         color: Color.fromARGB(24, 25, 27, 1),
         child: _BodyCardW(),
       ),
+    );
+  }
+}
+
+class _BodyCardW extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+    final movieDetails = model?.movieDetails;
+    if (movieDetails == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return ListView(
+      children: [
+        _TopPosterW(),
+        SizedBox(height: 20),
+        AboutMovie(),
+        SizedBox(height: 20),
+
+        DetailsCatdW(),
+        ActorScrolingW(),
+      ],
     );
   }
 }
@@ -78,13 +103,15 @@ class _TopPosterW extends StatelessWidget {
 }
 
 class AboutMovie extends StatelessWidget {
+  const AboutMovie({super.key});
+
   @override
   Widget build(BuildContext context) {
     final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
       context,
     );
     if (model == null) return const SizedBox.shrink();
-    var year = model?.movieDetails?.releaseDate?.year.toString();
+    var year = model.movieDetails?.releaseDate?.year.toString();
     year = year != null ? ' ( $year )' : '000';
     final listOfTextDetails = <String>[];
 
@@ -109,6 +136,7 @@ class AboutMovie extends StatelessWidget {
       }
       listOfTextDetails.add(listOfGenresName.join(', '));
     }
+    final overview = model.movieDetails?.overview ?? '';
 
     return Column(
       children: [
@@ -168,62 +196,137 @@ class AboutMovie extends StatelessWidget {
         ),
 
         SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              Text(
+                'Overview',
+                style: TextStyle(color: TextCardWColor.mainColor),
+              ),
+              Text(overview),
+            ],
+          ),
+        ),
+
+        SizedBox(height: 10),
       ],
     );
   }
 }
 
 class DetailsCatdW extends StatelessWidget {
+  const DetailsCatdW({super.key});
+
   @override
   Widget build(BuildContext context) {
     final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
       context,
     );
+    if (model == null) return SizedBox.shrink();
+    final overview = model.movieDetails?.overview ?? '';
+    var crew = model.movieDetails?.credits.crew;
+    if (crew == null || crew.isEmpty) return SizedBox.shrink();
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
 
-    final overview = model?.movieDetails?.overview ?? '';
-
+    var crewChunks = <List<Employee>>[];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunks.add(
+        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        children: crewChunks
+            .map(
+              (chank) => Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: _CrewWidget(employes: chank),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class _CrewWidget extends StatelessWidget {
+  final List<Employee> employes;
+  const _CrewWidget({required this.employes});
+  @override
+  Widget build(BuildContext context) {
+    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+      context,
+    );
+    if (model == null) return SizedBox.shrink();
+    var crew = model.movieDetails?.credits.crew;
+    if (crew == null || crew.isEmpty) return SizedBox.shrink();
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
+
+    var crewChunks = <List<Employee>>[];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunks.add(
+        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
+      );
+    }
+    return Row(
+      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: employes
+          .map((employee) => _ColumnEmployeeW(employee: employee))
+          .toList(),
+      // Column(
+      //   crossAxisAlignment: CrossAxisAlignment.start,
+      //   children: [
+      //     Text(
+      //       'Director',
+      //       style: TextStyle(color: TextCardWColor.secondColor),
+      //     ),
+      //     Text(
+      //       'Rodney Moolen',
+      //       style: TextStyle(color: TextCardWColor.mainColor),
+      //     ),
+      //   ],
+      // ),
+      // SizedBox(width: 30),
+      // Column(
+      //   crossAxisAlignment: CrossAxisAlignment.start,
+      //   children: [
+      //     Text(
+      //       'Music by',
+      //       style: TextStyle(color: TextCardWColor.secondColor),
+      //     ),
+      //     Text(
+      //       'Ozzy Osbourne',
+      //       style: TextStyle(color: TextCardWColor.mainColor),
+      //     ),
+      //   ],
+      // ),
+    );
+  }
+}
+
+class _ColumnEmployeeW extends StatelessWidget {
+  final Employee employee;
+  _ColumnEmployeeW({required this.employee});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Overview', style: TextStyle(color: TextCardWColor.mainColor)),
-          Text(overview),
-          SizedBox(height: 40),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Director',
-                    style: TextStyle(color: TextCardWColor.secondColor),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Rodney Moolen',
-                    style: TextStyle(color: TextCardWColor.mainColor),
-                  ),
-                ],
-              ),
-              SizedBox(width: 30),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Music by',
-                    style: TextStyle(color: TextCardWColor.secondColor),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'Ozzy Osbourne',
-                    style: TextStyle(color: TextCardWColor.mainColor),
-                  ),
-                ],
-              ),
-            ],
+          Text(
+            employee.job,
+            style: TextStyle(color: TextCardWColor.secondColor),
           ),
-          SizedBox(height: 18),
+          Text(
+            employee.name,
+            style: TextStyle(color: TextCardWColor.mainColor),
+          ),
         ],
       ),
     );
@@ -302,30 +405,6 @@ class ActorScrolingW extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _BodyCardW extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
-    );
-    final movieDetails = model?.movieDetails;
-    if (movieDetails == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    return ListView(
-      children: [
-        _TopPosterW(),
-        SizedBox(height: 20),
-        AboutMovie(),
-        SizedBox(height: 20),
-
-        DetailsCatdW(),
-        ActorScrolingW(),
-      ],
     );
   }
 }

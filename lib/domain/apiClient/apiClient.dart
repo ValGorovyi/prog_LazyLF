@@ -197,16 +197,20 @@ class ApiClient {
     try {
       final request = await _client.getUrl(url);
       final responce = await request.close();
-      final dynamic json = await responce.jsonDecode();
+      final dynamic json = (await responce.jsonDecode());
+      print(json);
 
       _validateResponce(responce, json);
       final result = parser(json);
+      print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      print(result);
       return result;
     } on SocketException {
       throw ApiClientExeption(ApiClientExeptionType.Network);
     } on ApiClientExeption {
       rethrow;
     } catch (e) {
+      print(e);
       throw ApiClientExeption(ApiClientExeptionType.Other);
     }
   }
@@ -281,10 +285,10 @@ class ApiClient {
       return responce;
     };
     final result = _getUniversal('/movie/$movieId', parser, <String, dynamic>{
+      'append_to_response': 'credits',
       'api_key': _apiKey,
       'language': language,
     });
-    print(result);
     return result;
   }
 }
@@ -311,3 +315,7 @@ extension HttpClientResJsonDecode on HttpClientResponse {
  */
 
 //eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMDIyOWZhMDY1ZmI4YjczY2I1NWMxZmFlM2NkMWExOCIsIm5iZiI6MTc2MzYzNzE5OS41Nzc5OTk4LCJzdWIiOiI2OTFlZjdjZjhmNWRlOTYzYmEyZTJiM2IiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.K3zT3xGgiDL0c4eApgdbFvzw10q_tYV9PfajiMnjVJ4
+
+
+
+// dart run build_runner build
