@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
@@ -198,11 +199,9 @@ class ApiClient {
       final request = await _client.getUrl(url);
       final responce = await request.close();
       final dynamic json = (await responce.jsonDecode());
-      // print(json['videos']);
 
       _validateResponce(responce, json);
       final result = parser(json);
-      // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       return result;
     } on SocketException {
       throw ApiClientExeption(ApiClientExeptionType.Network);
@@ -254,6 +253,20 @@ class ApiClient {
       'page': page.toString(),
       'language': language,
     });
+    return result;
+  }
+
+  Future<bool> isFavorire(int movieId, String sessionId) async {
+    final parser = (dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final favoriteJson = jsonMap['favorite'] as bool;
+      return favoriteJson;
+    };
+    final result = _getUniversal(
+      '/movie/$movieId/account_states',
+      parser,
+      <String, dynamic>{'session_id': sessionId},
+    );
     return result;
   }
 
