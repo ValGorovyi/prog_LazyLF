@@ -5,6 +5,8 @@ import 'package:prog_lazy_f/imagesW/imagesForW.dart';
 import 'package:prog_lazy_f/movieCardW/circularProgressIndicator/circularProgressIndicator.dart'
     show CircularProgressCustom;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart';
+import 'package:prog_lazy_f/navigation/mainNavigation.dart'
+    show NavigationRoutesNames;
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
 
@@ -137,7 +139,11 @@ class AboutMovie extends StatelessWidget {
       listOfTextDetails.add(listOfGenresName.join(', '));
     }
     final overview = model.movieDetails?.overview ?? '';
-
+    final videoT = model.movieDetails?.videos.results.where(
+      (video) => video.site == 'YouTube' && video.type == 'Trailer',
+    );
+    ;
+    final trailerKey = videoT?.isNotEmpty == true ? videoT?.first.key : null;
     return Column(
       children: [
         Row(
@@ -173,17 +179,21 @@ class AboutMovie extends StatelessWidget {
                 Text('Users score'),
               ],
             ),
-            const Row(
-              children: [
-                Icon(
-                  Icons.play_arrow_rounded,
-                  semanticLabel: 'Play triler',
-                  size: 50,
-                ),
-                SizedBox(width: 8),
-                Text('Play triler'),
-              ],
-            ),
+            trailerKey != null
+                ? Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.play_arrow_rounded, size: 50),
+                        onPressed: () => Navigator.of(context).pushNamed(
+                          NavigationRoutesNames.trailerRoute,
+                          arguments: trailerKey,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('Play triler'),
+                    ],
+                  )
+                : SizedBox.shrink(),
           ],
         ),
         SizedBox(height: 10),
@@ -278,33 +288,6 @@ class _CrewWidget extends StatelessWidget {
       children: employes
           .map((employee) => _ColumnEmployeeW(employee: employee))
           .toList(),
-      // Column(
-      //   crossAxisAlignment: CrossAxisAlignment.start,
-      //   children: [
-      //     Text(
-      //       'Director',
-      //       style: TextStyle(color: TextCardWColor.secondColor),
-      //     ),
-      //     Text(
-      //       'Rodney Moolen',
-      //       style: TextStyle(color: TextCardWColor.mainColor),
-      //     ),
-      //   ],
-      // ),
-      // SizedBox(width: 30),
-      // Column(
-      //   crossAxisAlignment: CrossAxisAlignment.start,
-      //   children: [
-      //     Text(
-      //       'Music by',
-      //       style: TextStyle(color: TextCardWColor.secondColor),
-      //     ),
-      //     Text(
-      //       'Ozzy Osbourne',
-      //       style: TextStyle(color: TextCardWColor.mainColor),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

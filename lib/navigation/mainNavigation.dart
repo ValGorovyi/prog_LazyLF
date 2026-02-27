@@ -8,6 +8,7 @@ import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
 import 'package:prog_lazy_f/movieCardW/movieCardW.dart' show MovieCardW;
+import 'package:prog_lazy_f/trailerW/trailerW.dart';
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
 
@@ -15,6 +16,7 @@ abstract class NavigationRoutesNames {
   static const mainRoute = '/';
   static const authRoute = 'auth';
   static const idRoute = '/id';
+  static const trailerRoute = '/id/trailer';
 }
 
 class MainNavigation {
@@ -44,6 +46,13 @@ class MainNavigation {
             child: const MovieCardW(),
           ),
         );
+      case NavigationRoutesNames.trailerRoute:
+        final args = settings.arguments;
+        final youtubeKey = args is String ? args : '';
+        return MaterialPageRoute(
+          builder: (context) => MovieTrailerW(youtubeKey: youtubeKey),
+        );
+
       default:
         const errWidget = Text('navigation error. 404. not found');
         return MaterialPageRoute(builder: (context) => errWidget);

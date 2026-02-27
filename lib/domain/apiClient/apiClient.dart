@@ -198,12 +198,11 @@ class ApiClient {
       final request = await _client.getUrl(url);
       final responce = await request.close();
       final dynamic json = (await responce.jsonDecode());
-      print(json);
+      // print(json['videos']);
 
       _validateResponce(responce, json);
       final result = parser(json);
-      print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      print(result);
+      // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       return result;
     } on SocketException {
       throw ApiClientExeption(ApiClientExeptionType.Network);
@@ -285,7 +284,7 @@ class ApiClient {
       return responce;
     };
     final result = _getUniversal('/movie/$movieId', parser, <String, dynamic>{
-      'append_to_response': 'credits',
+      'append_to_response': 'credits,videos',
       'api_key': _apiKey,
       'language': language,
     });

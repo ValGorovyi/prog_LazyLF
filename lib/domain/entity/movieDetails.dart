@@ -3,6 +3,7 @@ import 'package:prog_lazy_f/domain/entity/movieDateParser.dart'
     show parseMovieDateFromResp;
 import 'package:prog_lazy_f/domain/entity/movieDetailsCredits.dart'
     show MovieDetailsCredits;
+import 'package:prog_lazy_f/domain/entity/movieDetailsVideoT.dart';
 
 part 'movieDetails.g.dart';
 
@@ -36,6 +37,7 @@ class MovieDetailsType {
   final double voteAverage;
   final int voteCount;
   final MovieDetailsCredits credits;
+  final MovieDetailsVideoT videos;
   MovieDetailsType({
     required this.adult,
     required this.backdropPath,
@@ -64,6 +66,7 @@ class MovieDetailsType {
     required this.voteAverage,
     required this.voteCount,
     required this.credits,
+    required this.videos,
   });
   factory MovieDetailsType.fromJson(Map<String, dynamic> json) =>
       _$MovieDetailsTypeFromJson(json);
