@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
@@ -84,48 +83,6 @@ class ApiClient {
       <String, dynamic>{'api_key': _apiKey},
     );
     return result;
-    // try {
-    //   final url = _createUri(
-    //     '/authentication/token/validate_with_login',
-    //     <String, dynamic>{'api_key': _apiKey},
-    //   );
-    //   final params = <String, dynamic>{
-    //     'username': userName,
-    //     'password': password,
-    //     'request_token': requestToken,
-    //   };
-    //   final request = await _client.postUrl(url);
-    //   request.headers.contentType = ContentType.json;
-    //   request.write(jsonEncode(params));
-    //   final responce = await request.close();
-
-    //   final json = (await responce.jsonDecode()) as Map<String, dynamic>;
-    //   _validateResponce(responce, json);
-    //   final token = json['request_token'] as String;
-    //   return token;
-    // } on SocketException {
-    //   throw ApiClientExeption(ApiClientExeptionType.Network);
-    // } on ApiClientExeption {
-    //   rethrow;
-    // } catch (e) {
-    //   throw ApiClientExeption(ApiClientExeptionType.Other);
-    // }
-    // final url = _createUri(
-    //   '/authentication/token/validate_with_login',
-    //   <String, dynamic>{'api_key': _apiKey},
-    // );
-    // final params = <String, dynamic>{
-    //   'username': userName,
-    //   'password': password,
-    //   'request_token': requestToken,
-    // };
-    // final request = await _client.postUrl(url);
-    // request.headers.contentType = ContentType.json;
-    // request.write(jsonEncode(params));
-    // final responce = await request.close();
-    // final json = (await responce.jsonDecode()) as Map<String, dynamic>;
-    // final token = json['request_token'] as String;
-    // return token;
   }
 
   Future<String> _makeSession({required String requestToken}) async {
@@ -208,7 +165,7 @@ class ApiClient {
     } on ApiClientExeption {
       rethrow;
     } catch (e) {
-      print(e);
+      // print(e);
       throw ApiClientExeption(ApiClientExeptionType.Other);
     }
   }
@@ -259,13 +216,15 @@ class ApiClient {
   Future<bool> isFavorire(int movieId, String sessionId) async {
     final parser = (dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
+      print(jsonMap);
       final favoriteJson = jsonMap['favorite'] as bool;
+      print(favoriteJson);
       return favoriteJson;
     };
     final result = _getUniversal(
       '/movie/$movieId/account_states',
       parser,
-      <String, dynamic>{'session_id': sessionId},
+      <String, dynamic>{'session_id': sessionId, 'api_key': _apiKey},
     );
     return result;
   }
