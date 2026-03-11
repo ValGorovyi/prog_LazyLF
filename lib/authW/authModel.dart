@@ -12,6 +12,7 @@ class AuthModel extends ChangeNotifier {
   final passworldTextController = TextEditingController();
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
+  int? accountId;
   Future<void> auth(BuildContext context) async {
     final login = loginTextController.text;
     final password = passworldTextController.text;
@@ -26,6 +27,7 @@ class AuthModel extends ChangeNotifier {
     String? sessionId;
     try {
       sessionId = await _apiClient.auth(username: login, password: password);
+      accountId = await _apiClient.getAccId(sessionId);
     } on ApiClientExeption catch (e) {
       switch (e.type) {
         case ApiClientExeptionType.Network:
@@ -47,12 +49,15 @@ class AuthModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (sessionId == null) {
+    if (sessionId == null || accountId == null) {
       _errorMessage = 'unknow error';
       notifyListeners();
       return;
     }
     await _sessinDataProvider.setSessionId(sessionId);
+    // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! acIDDDDDDDDDD');
+    // print(accountId); // 22486860
+    await _sessinDataProvider.setAccountId(accountId);
     Navigator.of(context).pushReplacementNamed(NavigationRoutesNames.mainRoute);
   }
 

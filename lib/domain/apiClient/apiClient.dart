@@ -8,6 +8,19 @@ import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
 
 enum ApiClientExeptionType { Network, Auth, Other }
 
+enum MediaType { Movie, TV }
+
+extension MediaTypeAsString on MediaType {
+  String asString() {
+    switch (this) {
+      case MediaType.Movie:
+        return 'movie';
+      case MediaType.TV:
+        return 'tv';
+    }
+  }
+}
+
 class ApiClientExeption implements Exception {
   final ApiClientExeptionType type;
   ApiClientExeption(this.type);
@@ -99,39 +112,6 @@ class ApiClient {
       <String, dynamic>{'api_key': _apiKey},
     );
     return result;
-
-    // try {
-    //   final url = _createUri('/authentication/session/new', <String, dynamic>{
-    //     'api_key': _apiKey,
-    //   });
-    //   final params = <String, dynamic>{'request_token': requestToken};
-    //   final request = await _client.postUrl(url);
-    //   request.headers.contentType = ContentType.json;
-    //   request.write(jsonEncode(params));
-    //   final responce = await request.close();
-    //   final json = (await responce.jsonDecode()) as Map<String, dynamic>;
-    //   _validateResponce(responce, json);
-    //   final sessionId = json['session_id'] as String;
-    //   return sessionId;
-    // } on SocketException {
-    //   throw ApiClientExeption(ApiClientExeptionType.Network);
-    // } on ApiClientExeption {
-    //   rethrow;
-    // } catch (e) {
-    //   throw ApiClientExeption(ApiClientExeptionType.Other);
-    // }
-
-    // final url = _createUri('/authentication/session/new', <String, dynamic>{
-    //   'api_key': _apiKey,
-    // });
-    // final params = <String, dynamic>{'request_token': requestToken};
-    // final request = await _client.postUrl(url);
-    // request.headers.contentType = ContentType.json;
-    // request.write(jsonEncode(params));
-    // final responce = await request.close();
-    // final json = (await responce.jsonDecode()) as Map<String, dynamic>;
-    // final sessionId = json['session_id'] as String;
-    // return sessionId;
   }
 
   void _validateResponce(HttpClientResponse responce, dynamic json) {
@@ -183,6 +163,10 @@ class ApiClient {
       request.write(jsonEncode(bodyParams));
       final responce = await request.close();
 
+      /// kostil !
+      if (responce.statusCode == 201) {
+        return 1 as T;
+      }
       final dynamic json = (await responce.jsonDecode());
       _validateResponce(responce, json);
       final result = parser(json);
@@ -194,6 +178,19 @@ class ApiClient {
     } catch (e) {
       throw ApiClientExeption(ApiClientExeptionType.Other);
     }
+  }
+
+  Future<int> getAccId(String sessionId) async {
+    final parser = (dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final result = jsonMap['id'] as int;
+      return result;
+    };
+    final result = _getUniversal('/account', parser, <String, dynamic>{
+      'api_key': _apiKey,
+      'session_id': sessionId,
+    });
+    return result;
   }
 
   Future<popularMoviesResponceType> popularMovie(
@@ -246,6 +243,32 @@ class ApiClient {
       'query': query,
       'include_adult': true.toString(),
     });
+    return result;
+  }
+
+  Future<int> markAsFavorite({
+    required int accountId,
+    required String sessionId,
+    required MediaType mediaType,
+    required int mediaId,
+    required bool favorite,
+  }) async {
+    /// kostil !
+    final parser = (dynamic json) {
+      return 1;
+    };
+
+    final paramsBody = <String, dynamic>{
+      'media_type': mediaType.asString(),
+      'media_id': mediaId.toString(),
+      'favorite': favorite.toString(),
+    };
+    final result = _postUniversal(
+      '/account/$accountId/favorite',
+      parser,
+      paramsBody,
+      <String, dynamic>{'api_key': _apiKey, 'session_id': sessionId},
+    );
     return result;
   }
 

@@ -34,12 +34,28 @@ class MovieCardDetailsModel extends ChangeNotifier {
   Future<void> loadDetails() async {
     _MovieDetailsType = await _apiCl.movieDetails(movieId, _locale);
     final sessionId = await _sessionDataPr.getSessionId();
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    print(sessionId);
-    print(movieId);
+    // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    // print(sessionId);
+    // print(movieId);
     if (sessionId != null) {
       _isFavorite = await _apiCl.isFavorire(movieId, sessionId);
     }
     notifyListeners();
+  }
+
+  Future<void> toggleFavorite() async {
+    final sessionId = await _sessionDataPr.getSessionId();
+    final accId = await _sessionDataPr.getAccountId();
+    if (accId == null || sessionId == null) return;
+    final newValueIsFavorite = !_isFavorite;
+    _isFavorite = newValueIsFavorite;
+    notifyListeners();
+    await _apiCl.markAsFavorite(
+      accountId: accId,
+      sessionId: sessionId,
+      mediaType: MediaType.Movie,
+      mediaId: movieId,
+      favorite: newValueIsFavorite,
+    );
   }
 }
