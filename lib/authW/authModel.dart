@@ -39,6 +39,8 @@ class AuthModel extends ChangeNotifier {
         case ApiClientExeptionType.Other:
           _errorMessage = 'error. repeat pleace';
           break;
+        case ApiClientExeptionType.SessionExpired:
+          print('never');
       }
     } catch (er) {
       _errorMessage = 'error catch. repeat';
@@ -55,8 +57,6 @@ class AuthModel extends ChangeNotifier {
       return;
     }
     await _sessinDataProvider.setSessionId(sessionId);
-    // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! acIDDDDDDDDDD');
-    // print(accountId); // 22486860
     await _sessinDataProvider.setAccountId(accountId);
     Navigator.of(context).pushReplacementNamed(NavigationRoutesNames.mainRoute);
   }

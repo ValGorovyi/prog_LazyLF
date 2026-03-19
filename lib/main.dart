@@ -6,20 +6,24 @@ import 'package:flutter_localizations/flutter_localizations.dart'
         GlobalCupertinoLocalizations;
 import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
+import 'package:prog_lazy_f/universalInherit/universalInheritProvider.dart'
+    show UniversalInheritProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final model = AppModel();
   await model.checkAuth();
-  runApp(UpperW(model: model));
+  const app = UpperW();
+  final widget = UniversalInheritProvider(model: model, child: app);
+  runApp(widget);
 }
 
 class UpperW extends StatelessWidget {
-  final AppModel model;
   static final mainNavigation = MainNavigation();
-  const UpperW({super.key, required this.model});
+  const UpperW({super.key});
   @override
   Widget build(BuildContext context) {
+    final model = UniversalInheritProvider.read<AppModel>(context);
     return MaterialApp(
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -42,7 +46,6 @@ class UpperW extends StatelessWidget {
             backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
             foregroundColor: WidgetStateProperty.all(Colors.white),
 
-            // padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsetsGeometry.symmetric(horizontal: 10))
             textStyle: WidgetStateProperty.all<TextStyle>(
               TextStyle(fontSize: 18),
             ),
@@ -68,7 +71,7 @@ class UpperW extends StatelessWidget {
       ),
 
       // home: AuthorizW(),
-      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
       routes: mainNavigation.routes,
       onGenerateRoute: mainNavigation.onGererateRoutes,
     );

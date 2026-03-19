@@ -13,11 +13,12 @@ class MovieCardDetailsModel extends ChangeNotifier {
   final int movieId;
   String _locale = '';
   MovieDetailsType? _MovieDetailsType;
-  MovieCardDetailsModel(this.movieId);
   late DateFormat _dateFormat;
-  MovieDetailsType? get movieDetails => _MovieDetailsType;
   bool _isFavorite = false;
   bool get isFavorite => _isFavorite;
+  Future<void>? Function()? onSessionExpired;
+  MovieCardDetailsModel(this.movieId);
+  MovieDetailsType? get movieDetails => _MovieDetailsType;
 
   Future<void> setupLocate(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -32,30 +33,47 @@ class MovieCardDetailsModel extends ChangeNotifier {
   }
 
   Future<void> loadDetails() async {
-    _MovieDetailsType = await _apiCl.movieDetails(movieId, _locale);
-    final sessionId = await _sessionDataPr.getSessionId();
-    // print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    // print(sessionId);
-    // print(movieId);
-    if (sessionId != null) {
-      _isFavorite = await _apiCl.isFavorire(movieId, sessionId);
+    try {
+      _MovieDetailsType = await _apiCl.movieDetails(movieId, _locale);
+      final sessionId = await _sessionDataPr.getSessionId();
+      if (sessionId != null) {
+        _isFavorite = await _apiCl.isFavorire(movieId, sessionId);
+      }
+      notifyListeners();
+    } on ApiClientExeption catch (e) {
+      _handleApiClientExeption(e);
     }
-    notifyListeners();
+  }
+
+  void _handleApiClientExeption(ApiClientExeption exeption) {
+    switch (exeption.type) {
+      case ApiClientExeptionType.SessionExpired:
+        onSessionExpired?.call();
+      default:
+        print(exeption);
+    }
   }
 
   Future<void> toggleFavorite() async {
     final sessionId = await _sessionDataPr.getSessionId();
     final accId = await _sessionDataPr.getAccountId();
     if (accId == null || sessionId == null) return;
-    final newValueIsFavorite = !_isFavorite;
+    final newValueIsFavorite = !isFavorite;
+
     _isFavorite = newValueIsFavorite;
     notifyListeners();
-    await _apiCl.markAsFavorite(
-      accountId: accId,
-      sessionId: sessionId,
-      mediaType: MediaType.Movie,
-      mediaId: movieId,
-      favorite: newValueIsFavorite,
-    );
+    try {
+      await _apiCl.markAsFavorite(
+        accountId: accId,
+        sessionId: sessionId,
+        mediaType: MediaType.Movie,
+        mediaId: movieId,
+        favorite: newValueIsFavorite,
+      );
+    } on ApiClientExeption catch (e) {
+      _handleApiClientExeption(e);
+    } catch (e) {
+      print(e);
+    }
   }
 }

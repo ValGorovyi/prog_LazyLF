@@ -19,7 +19,6 @@ class _MovieTrailerWState extends State<MovieTrailerW> {
       initialVideoId: widget.youtubeKey,
       flags: YoutubePlayerFlags(autoPlay: true, mute: false),
     );
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! started');
   }
 
   @override

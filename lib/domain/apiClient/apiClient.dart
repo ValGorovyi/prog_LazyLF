@@ -6,7 +6,7 @@ import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
 import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
     show popularMoviesResponceType;
 
-enum ApiClientExeptionType { Network, Auth, Other }
+enum ApiClientExeptionType { Network, Auth, Other, SessionExpired }
 
 enum MediaType { Movie, TV }
 
@@ -99,7 +99,6 @@ class ApiClient {
   }
 
   Future<String> _makeSession({required String requestToken}) async {
-    // final url = Uri.parse('$_host?api_key=$_apiKey');
     final parser = (dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final sessionId = jsonMap['session_id'] as String;
@@ -120,6 +119,8 @@ class ApiClient {
       final code = statusCodeInt is int ? statusCodeInt : 0;
       if (code == 30) {
         throw ApiClientExeption(ApiClientExeptionType.Auth);
+      } else if (code == 3) {
+        throw ApiClientExeption(ApiClientExeptionType.SessionExpired);
       } else {
         throw ApiClientExeption(ApiClientExeptionType.Other);
       }
@@ -145,7 +146,6 @@ class ApiClient {
     } on ApiClientExeption {
       rethrow;
     } catch (e) {
-      // print(e);
       throw ApiClientExeption(ApiClientExeptionType.Other);
     }
   }
@@ -162,11 +162,6 @@ class ApiClient {
       request.headers.contentType = ContentType.json;
       request.write(jsonEncode(bodyParams));
       final responce = await request.close();
-
-      /// kostil !
-      if (responce.statusCode == 201) {
-        return 1 as T;
-      }
       final dynamic json = (await responce.jsonDecode());
       _validateResponce(responce, json);
       final result = parser(json);
@@ -213,9 +208,7 @@ class ApiClient {
   Future<bool> isFavorire(int movieId, String sessionId) async {
     final parser = (dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
-      print(jsonMap);
       final favoriteJson = jsonMap['favorite'] as bool;
-      print(favoriteJson);
       return favoriteJson;
     };
     final result = _getUniversal(
@@ -260,8 +253,8 @@ class ApiClient {
 
     final paramsBody = <String, dynamic>{
       'media_type': mediaType.asString(),
-      'media_id': mediaId.toString(),
-      'favorite': favorite.toString(),
+      'media_id': mediaId,
+      'favorite': favorite,
     };
     final result = _postUniversal(
       '/account/$accountId/favorite',
