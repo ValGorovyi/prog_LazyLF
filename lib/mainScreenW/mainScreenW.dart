@@ -40,7 +40,7 @@ class _MainScreenW extends State<MainScreenW> {
           IconButton(
             // demo code
             onPressed: () => SessionDataProvider().setSessionId(null),
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.exit_to_app),
           ),
         ],
       ),

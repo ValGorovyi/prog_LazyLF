@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart'
     show SessionDataProvider;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart';
+import 'package:prog_lazy_f/services/authService.dart' show AuthService;
 
 class LoaderVieWModel {
   BuildContext context;
-  final _sessionDataProvider = SessionDataProvider();
+  final _authService = AuthService();
   LoaderVieWModel(this.context) {
     asyncInit();
   }
@@ -15,8 +16,7 @@ class LoaderVieWModel {
   }
 
   Future<void> checkAuth() async {
-    final sessionId = await _sessionDataProvider.getSessionId();
-    final isAuth = sessionId != null;
+    final isAuth = await _authService.isAuth();
     final nextScreen = isAuth
         ? NavigationRoutesNames.mainRoute
         : NavigationRoutesNames.authRoute;

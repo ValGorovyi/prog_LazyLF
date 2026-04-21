@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart' show Widget, MaterialPageRoute;
 import 'package:flutter/widgets.dart';
-import 'package:prog_lazy_f/authW/authModel.dart' show AuthModel;
-import 'package:prog_lazy_f/authW/authW.dart' show AuthorizW;
-import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
-    show movieCardsListModel;
-import 'package:prog_lazy_f/loaderW/loaderWidget.dart';
-import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
-import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
-    show MovieCardDetailsModel;
-import 'package:prog_lazy_f/movieCardW/movieCardW.dart' show MovieCardW;
-import 'package:prog_lazy_f/trailerW/trailerW.dart';
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
+import 'package:prog_lazy_f/domain/factoryes/screenFactory.dart';
 
 abstract class NavigationRoutesNames {
   static const mainRoute = '/main';
@@ -22,16 +11,11 @@ abstract class NavigationRoutesNames {
 }
 
 class MainNavigation {
+  static final _screenFactory = ScreenFactory();
   final routes = <String, Widget Function(BuildContext)>{
-    NavigationRoutesNames.loaderRoute: (BuildContext context) =>
-        LoaderWidget.create(),
-    NavigationRoutesNames.authRoute: (BuildContext context) =>
-        UniversalInheritNitifier(create: () => AuthModel(), child: AuthorizW()),
-    NavigationRoutesNames.mainRoute: (BuildContext context) =>
-        UniversalInheritNitifier(
-          create: () => movieCardsListModel(),
-          child: MainScreenW(),
-        ),
+    NavigationRoutesNames.loaderRoute: (_) => _screenFactory.createLoaderW(),
+    NavigationRoutesNames.authRoute: (_) => _screenFactory.creareAuthW(),
+    NavigationRoutesNames.mainRoute: (_) => _screenFactory.createMainScreenW(),
   };
   // String initialRoute(bool isAuth) {
   //   return isAuth
@@ -45,21 +29,18 @@ class MainNavigation {
         final args = settings.arguments;
         final movieId = args is int ? args : 1;
         return MaterialPageRoute(
-          builder: (context) => UniversalInheritNitifier(
-            create: () => MovieCardDetailsModel(movieId),
-            child: const MovieCardW(),
-          ),
+          builder: (_) => _screenFactory.createMovieCardW(movieId),
         );
       case NavigationRoutesNames.trailerRoute:
         final args = settings.arguments;
         final youtubeKey = args is String ? args : '';
         return MaterialPageRoute(
-          builder: (context) => MovieTrailerW(youtubeKey: youtubeKey),
+          builder: (_) => _screenFactory.createMovieTrailerW(youtubeKey),
         );
 
       default:
         const errWidget = Text('navigation error. 404. not found');
-        return MaterialPageRoute(builder: (context) => errWidget);
+        return MaterialPageRoute(builder: (_) => errWidget);
     }
   }
 }

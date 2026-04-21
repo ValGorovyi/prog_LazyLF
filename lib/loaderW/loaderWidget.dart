@@ -9,12 +9,4 @@ class LoaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
-
-  static Widget create() {
-    return Provider(
-      create: (context) => LoaderVieWModel(context),
-      lazy: false,
-      child: LoaderWidget(),
-    );
-  }
 }
