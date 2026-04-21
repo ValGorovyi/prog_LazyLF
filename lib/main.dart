@@ -4,18 +4,12 @@ import 'package:flutter_localizations/flutter_localizations.dart'
         GlobalMaterialLocalizations,
         GlobalWidgetsLocalizations,
         GlobalCupertinoLocalizations;
-import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
-import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
-import 'package:prog_lazy_f/universalInherit/universalInheritProvider.dart'
-    show UniversalInheritProvider;
+import 'package:prog_lazy_f/navigation/mainNavigation.dart'
+    show MainNavigation, NavigationRoutesNames;
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final model = AppModel();
-  await model.checkAuth();
+void main() {
   const app = UpperW();
-  final widget = UniversalInheritProvider(model: model, child: app);
-  runApp(widget);
+  runApp(app);
 }
 
 class UpperW extends StatelessWidget {
@@ -23,7 +17,6 @@ class UpperW extends StatelessWidget {
   const UpperW({super.key});
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritProvider.read<AppModel>(context);
     return MaterialApp(
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -71,7 +64,7 @@ class UpperW extends StatelessWidget {
       ),
 
       // home: AuthorizW(),
-      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
+      initialRoute: NavigationRoutesNames.loaderRoute,
       routes: mainNavigation.routes,
       onGenerateRoute: mainNavigation.onGererateRoutes,
     );

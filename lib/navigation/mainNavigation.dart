@@ -4,6 +4,7 @@ import 'package:prog_lazy_f/authW/authModel.dart' show AuthModel;
 import 'package:prog_lazy_f/authW/authW.dart' show AuthorizW;
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show movieCardsListModel;
+import 'package:prog_lazy_f/loaderW/loaderWidget.dart';
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
@@ -13,14 +14,17 @@ import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
 
 abstract class NavigationRoutesNames {
-  static const mainRoute = '/';
-  static const authRoute = 'auth';
-  static const idRoute = '/id';
-  static const trailerRoute = '/id/trailer';
+  static const mainRoute = '/main';
+  static const authRoute = '/auth';
+  static const idRoute = '/main/id';
+  static const trailerRoute = '/main/id/trailer';
+  static const loaderRoute = '/';
 }
 
 class MainNavigation {
   final routes = <String, Widget Function(BuildContext)>{
+    NavigationRoutesNames.loaderRoute: (BuildContext context) =>
+        LoaderWidget.create(),
     NavigationRoutesNames.authRoute: (BuildContext context) =>
         UniversalInheritNitifier(create: () => AuthModel(), child: AuthorizW()),
     NavigationRoutesNames.mainRoute: (BuildContext context) =>
@@ -29,11 +33,11 @@ class MainNavigation {
           child: MainScreenW(),
         ),
   };
-  String initialRoute(bool isAuth) {
-    return isAuth
-        ? NavigationRoutesNames.mainRoute
-        : NavigationRoutesNames.authRoute;
-  }
+  // String initialRoute(bool isAuth) {
+  //   return isAuth
+  //       ? NavigationRoutesNames.mainRoute
+  //       : NavigationRoutesNames.authRoute;
+  // }
 
   Route<Object> onGererateRoutes(RouteSettings settings) {
     switch (settings.name) {
