@@ -1,73 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/domain/apiClient/apiClient.dart'
-    show ApiClient, ApiClientExeption, ApiClientExeptionType;
-import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
-import 'package:prog_lazy_f/navigation/mainNavigation.dart'
-    show NavigationRoutesNames;
+    show ApiClientExeption, ApiClientExeptionType;
+import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
+import 'package:prog_lazy_f/services/authService.dart' show AuthService;
 
-class AuthModel extends ChangeNotifier {
-  final _sessinDataProvider = SessionDataProvider();
-  final _apiClient = ApiClient();
+class AuthViewModel extends ChangeNotifier {
   final loginTextController = TextEditingController();
   final passworldTextController = TextEditingController();
+  final _authService = AuthService();
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
-  int? accountId;
-  Future<void> auth(BuildContext context) async {
-    final login = loginTextController.text;
-    final password = passworldTextController.text;
-    if (login.isEmpty && password.isEmpty) {
-      _errorMessage = 'lodin or password is empty';
-      notifyListeners();
-      return;
-    }
-    _errorMessage = null;
-    _isAuthProgress = true;
-    notifyListeners();
-    String? sessionId;
-    try {
-      sessionId = await _apiClient.auth(username: login, password: password);
-      accountId = await _apiClient.getAccId(sessionId);
-    } on ApiClientExeption catch (e) {
-      switch (e.type) {
-        case ApiClientExeptionType.Network:
-          _errorMessage = 'Network error. Wi-fi???';
-          break;
-        case ApiClientExeptionType.Auth:
-          _errorMessage = 'Login or password error';
-          break;
-        case ApiClientExeptionType.Other:
-          _errorMessage = 'error. repeat pleace';
-          break;
-        case ApiClientExeptionType.SessionExpired:
-          print('never');
-      }
-    } catch (er) {
-      _errorMessage = 'error catch. repeat';
-    }
-
-    _isAuthProgress = false;
-    if (_errorMessage != null) {
-      notifyListeners();
-      return;
-    }
-    if (sessionId == null || accountId == null) {
-      _errorMessage = 'unknow error';
-      notifyListeners();
-      return;
-    }
-    await _sessinDataProvider.setSessionId(sessionId);
-    await _sessinDataProvider.setAccountId(accountId);
-    Navigator.of(context).pushReplacementNamed(NavigationRoutesNames.mainRoute);
-  }
 
   bool _isAuthProgress = false;
   bool get canStartAuth => !_isAuthProgress;
   bool get isAuthProgress => _isAuthProgress;
+
+  bool _isValid(String login, String password) {
+    return login.isNotEmpty && password.isNotEmpty;
+  }
+
+  void _updateState(String? errorMessageArg, bool isAuthProgressArg) {
+    if (errorMessageArg == _errorMessage &&
+        isAuthProgressArg == _isAuthProgress) {
+      return;
+    }
+    _errorMessage = errorMessageArg;
+    _isAuthProgress = isAuthProgressArg;
+    notifyListeners();
+  }
+
+  Future<String?> _loginingProcess(String login, String password) async {
+    try {
+      await _authService.loginingMethod(login, password);
+      return null;
+    } on ApiClientExeption catch (e) {
+      switch (e.type) {
+        case ApiClientExeptionType.Network:
+          return 'Network error. Wi-fi???';
+        case ApiClientExeptionType.Auth:
+          return 'Login or password error';
+        case ApiClientExeptionType.Other:
+          return 'Error. Repeat pleace';
+        case ApiClientExeptionType.SessionExpired:
+          return 'Crazy error';
+      }
+    } catch (er) {
+      return 'Error catch. Repeat later';
+    }
+  }
+
+  Future<void> auth(BuildContext context) async {
+    final login = loginTextController.text;
+    final password = passworldTextController.text;
+
+    if (!_isValid(login, password)) {
+      _updateState('Lodin or password is empty', false);
+      return;
+    }
+    _updateState(null, true);
+    _errorMessage = await _loginingProcess(login, password);
+    if (_errorMessage == null) {
+      MainNavigation.resetNavigatot(context);
+    } else {
+      _updateState(_errorMessage, false);
+    }
+  }
 }
 
 class AuthInherit extends InheritedNotifier {
-  final AuthModel model;
+  final AuthViewModel model;
   AuthInherit({required super.child, required this.model})
     : super(notifier: model);
 

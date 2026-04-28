@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/authW/authModel.dart' show AuthModel;
+import 'package:prog_lazy_f/authW/authModel.dart' show AuthViewModel;
 import 'package:prog_lazy_f/authW/authW.dart' show AuthorizW;
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show movieCardsListModel;
@@ -12,7 +12,7 @@ import 'package:prog_lazy_f/movieCardW/movieCardW.dart' show MovieCardW;
 import 'package:prog_lazy_f/trailerW/trailerW.dart' show MovieTrailerW;
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
-import 'package:provider/provider.dart' show Provider;
+import 'package:provider/provider.dart';
 
 class ScreenFactory {
   Widget createLoaderW() {
@@ -24,8 +24,8 @@ class ScreenFactory {
   }
 
   Widget creareAuthW() {
-    return UniversalInheritNitifier(
-      create: () => AuthModel(),
+    return ChangeNotifierProvider(
+      create: (_) => AuthViewModel(),
       child: AuthorizW(),
     );
   }

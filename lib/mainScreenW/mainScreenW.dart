@@ -3,6 +3,7 @@ import 'package:prog_lazy_f/cardsList/cardsList.dart';
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show movieCardsListModel;
 import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
+import 'package:prog_lazy_f/navigation/mainNavigation.dart';
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
 
@@ -39,7 +40,11 @@ class _MainScreenW extends State<MainScreenW> {
         actions: [
           IconButton(
             // demo code
-            onPressed: () => SessionDataProvider().setSessionId(null),
+            onPressed: () {
+              SessionDataProvider().setSessionId(null);
+              MainNavigation.resetNavigatot(context);
+            },
+            //
             icon: Icon(Icons.exit_to_app),
           ),
         ],
