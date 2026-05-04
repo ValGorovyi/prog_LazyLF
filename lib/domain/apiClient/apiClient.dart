@@ -6,9 +6,7 @@ import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
 import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
     show popularMoviesResponceType;
 
-enum ApiClientExeptionType { Network, Auth, Other, SessionExpired }
 
-enum MediaType { Movie, TV }
 
 extension MediaTypeAsString on MediaType {
   String asString() {
@@ -21,31 +19,33 @@ extension MediaTypeAsString on MediaType {
   }
 }
 
+enum MediaType { Movie, TV }
 class ApiClientExeption implements Exception {
   final ApiClientExeptionType type;
   ApiClientExeption(this.type);
 }
 
 class ApiClient {
-  final _client = HttpClient();
-  static const _host = 'https://api.themoviedb.org/3';
-  static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
-  static const _apiKey = 'c0229fa065fb8b73cb55c1fae3cd1a18';
-  static const _headerApiKey =
-      'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMDIyOWZhMDY1ZmI4YjczY2I1NWMxZmFlM2NkMWExOCIsIm5iZiI6MTc2MzYzNzE5OS41Nzc5OTk4LCJzdWIiOiI2OTFlZjdjZjhmNWRlOTYzYmEyZTJiM2IiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.K3zT3xGgiDL0c4eApgdbFvzw10q_tYV9PfajiMnjVJ4';
+  final _networkClient= NetworkClient(); //import
 
-  static String imageUrl(String pathSrc) {
-    return _imageUrl + pathSrc;
-  }
+  // static const _host = 'https://api.themoviedb.org/3';
+  // static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
+  // static const _apiKey = 'c0229fa065fb8b73cb55c1fae3cd1a18';
+  // static const _headerApiKey =
+  //     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjMDIyOWZhMDY1ZmI4YjczY2I1NWMxZmFlM2NkMWExOCIsIm5iZiI6MTc2MzYzNzE5OS41Nzc5OTk4LCJzdWIiOiI2OTFlZjdjZjhmNWRlOTYzYmEyZTJiM2IiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.K3zT3xGgiDL0c4eApgdbFvzw10q_tYV9PfajiMnjVJ4';
 
-  Uri _createUri(String path, [Map<String, dynamic>? parameters]) {
-    final myUri = Uri.parse('$_host$path');
-    if (parameters != null) {
-      return myUri.replace(queryParameters: parameters);
-    } else {
-      return myUri;
-    }
-  }
+  // static String imageUrl(String pathSrc) {
+  //   return _imageUrl + pathSrc;
+  // }
+
+  // Uri _createUri(String path, [Map<String, dynamic>? parameters]) {
+  //   final myUri = Uri.parse('$_host$path');
+  //   if (parameters != null) {
+  //     return myUri.replace(queryParameters: parameters);
+  //   } else {
+  //     return myUri;
+  //   }
+  // }
 
   Future<String> auth({
     required String username,
@@ -67,10 +67,10 @@ class ApiClient {
       final token = json['request_token'] as String;
       return token;
     };
-    final result = _getUniversal(
+    final result = _networkClient.getUniversal(
       '/authentication/token/new',
       parser,
-      <String, dynamic>{'api_key': _apiKey},
+      <String, dynamic>{'api_key': Configuration.apiKey},
     );
     return result;
   }
@@ -85,7 +85,7 @@ class ApiClient {
       final token = json['request_token'] as String;
       return token;
     };
-    final result = _postUniversal(
+    final result = _networkClient.postUniversal(
       '/authentication/token/validate_with_login',
       parser,
       <String, dynamic>{
@@ -93,7 +93,7 @@ class ApiClient {
         'password': password,
         'request_token': requestToken,
       },
-      <String, dynamic>{'api_key': _apiKey},
+      <String, dynamic>{'api_key': Configuration.apiKey},
     );
     return result;
   }
@@ -104,76 +104,76 @@ class ApiClient {
       final sessionId = jsonMap['session_id'] as String;
       return sessionId;
     };
-    final result = _postUniversal(
+    final result = _networkClient.postUniversal(
       '/authentication/session/new',
       parser,
       <String, dynamic>{'request_token': requestToken},
-      <String, dynamic>{'api_key': _apiKey},
+      <String, dynamic>{'api_key': Configuration.apiKey},
     );
     return result;
   }
 
-  void _validateResponce(HttpClientResponse responce, dynamic json) {
-    if (responce.statusCode == 401) {
-      final dynamic statusCodeInt = json['status_code'];
-      final code = statusCodeInt is int ? statusCodeInt : 0;
-      if (code == 30) {
-        throw ApiClientExeption(ApiClientExeptionType.Auth);
-      } else if (code == 3) {
-        throw ApiClientExeption(ApiClientExeptionType.SessionExpired);
-      } else {
-        throw ApiClientExeption(ApiClientExeptionType.Other);
-      }
-    }
-  }
+  // void _validateResponce(HttpClientResponse responce, dynamic json) {
+  //   if (responce.statusCode == 401) {
+  //     final dynamic statusCodeInt = json['status_code'];
+  //     final code = statusCodeInt is int ? statusCodeInt : 0;
+  //     if (code == 30) {
+  //       throw ApiClientExeption(ApiClientExeptionType.Auth);
+  //     } else if (code == 3) {
+  //       throw ApiClientExeption(ApiClientExeptionType.SessionExpired);
+  //     } else {
+  //       throw ApiClientExeption(ApiClientExeptionType.Other);
+  //     }
+  //   }
+  // }
 
-  Future<T> _getUniversal<T>(
-    String path,
-    T Function(dynamic json) parser, [
-    Map<String, dynamic>? parameters,
-  ]) async {
-    final url = _createUri(path, parameters);
-    try {
-      final request = await _client.getUrl(url);
-      final responce = await request.close();
-      final dynamic json = (await responce.jsonDecode());
+  // Future<T> _getUniversal<T>(
+  //   String path,
+  //   T Function(dynamic json) parser, [
+  //   Map<String, dynamic>? parameters,
+  // ]) async {
+  //   final url = _createUri(path, parameters);
+  //   try {
+  //     final request = await _client.getUrl(url);
+  //     final responce = await request.close();
+  //     final dynamic json = (await responce.jsonDecode());
 
-      _validateResponce(responce, json);
-      final result = parser(json);
-      return result;
-    } on SocketException {
-      throw ApiClientExeption(ApiClientExeptionType.Network);
-    } on ApiClientExeption {
-      rethrow;
-    } catch (e) {
-      throw ApiClientExeption(ApiClientExeptionType.Other);
-    }
-  }
+  //     _validateResponce(responce, json);
+  //     final result = parser(json);
+  //     return result;
+  //   } on SocketException {
+  //     throw ApiClientExeption(ApiClientExeptionType.Network);
+  //   } on ApiClientExeption {
+  //     rethrow;
+  //   } catch (e) {
+  //     throw ApiClientExeption(ApiClientExeptionType.Other);
+  //   }
+  // }
 
-  Future<T> _postUniversal<T>(
-    String path,
-    T Function(dynamic json) parser,
-    Map<String, dynamic> bodyParams, [
-    Map<String, dynamic>? urlParams,
-  ]) async {
-    try {
-      final url = _createUri(path, urlParams);
-      final request = await _client.postUrl(url);
-      request.headers.contentType = ContentType.json;
-      request.write(jsonEncode(bodyParams));
-      final responce = await request.close();
-      final dynamic json = (await responce.jsonDecode());
-      _validateResponce(responce, json);
-      final result = parser(json);
-      return result;
-    } on SocketException {
-      throw ApiClientExeption(ApiClientExeptionType.Network);
-    } on ApiClientExeption {
-      rethrow;
-    } catch (e) {
-      throw ApiClientExeption(ApiClientExeptionType.Other);
-    }
-  }
+  // Future<T> _postUniversal<T>(
+  //   String path,
+  //   T Function(dynamic json) parser,
+  //   Map<String, dynamic> bodyParams, [
+  //   Map<String, dynamic>? urlParams,
+  // ]) async {
+  //   try {
+  //     final url = _createUri(path, urlParams);
+  //     final request = await _client.postUrl(url);
+  //     request.headers.contentType = ContentType.json;
+  //     request.write(jsonEncode(bodyParams));
+  //     final responce = await request.close();
+  //     final dynamic json = (await responce.jsonDecode());
+  //     _validateResponce(responce, json);
+  //     final result = parser(json);
+  //     return result;
+  //   } on SocketException {
+  //     throw ApiClientExeption(ApiClientExeptionType.Network);
+  //   } on ApiClientExeption {
+  //     rethrow;
+  //   } catch (e) {
+  //     throw ApiClientExeption(ApiClientExeptionType.Other);
+  //   }
+  // }
 
   Future<int> getAccId(String sessionId) async {
     final parser = (dynamic json) {
@@ -181,8 +181,8 @@ class ApiClient {
       final result = jsonMap['id'] as int;
       return result;
     };
-    final result = _getUniversal('/account', parser, <String, dynamic>{
-      'api_key': _apiKey,
+    final result = _networkClient.getUniversal('/account', parser, <String, dynamic>{
+      'api_key': Configuration.apiKey,
       'session_id': sessionId,
     });
     return result;
@@ -197,8 +197,8 @@ class ApiClient {
       final responce = popularMoviesResponceType.fromJson(jsonMap);
       return responce;
     };
-    final result = _getUniversal('/movie/popular', parser, <String, dynamic>{
-      'api_key': _apiKey,
+    final result = _networkClient.getUniversal('/movie/popular', parser, <String, dynamic>{
+      'api_key': Configuration.apiKey,
       'page': page.toString(),
       'language': language,
     });
@@ -211,10 +211,10 @@ class ApiClient {
       final favoriteJson = jsonMap['favorite'] as bool;
       return favoriteJson;
     };
-    final result = _getUniversal(
+    final result = _networkClient.getUniversal(
       '/movie/$movieId/account_states',
       parser,
-      <String, dynamic>{'session_id': sessionId, 'api_key': _apiKey},
+      <String, dynamic>{'session_id': sessionId, 'api_key': Configuration.apiKey},
     );
     return result;
   }
@@ -229,8 +229,8 @@ class ApiClient {
       final responce = popularMoviesResponceType.fromJson(jsonMap);
       return responce;
     };
-    final result = _getUniversal('/search/movie', parser, <String, dynamic>{
-      'api_key': _apiKey,
+    final result = _networkClient.getUniversal('/search/movie', parser, <String, dynamic>{
+      'api_key': Configuration.apiKey,
       'page': page.toString(),
       'language': language,
       'query': query,
@@ -256,11 +256,11 @@ class ApiClient {
       'media_id': mediaId,
       'favorite': favorite,
     };
-    final result = _postUniversal(
+    final result = _networkClient.postUniversal(
       '/account/$accountId/favorite',
       parser,
       paramsBody,
-      <String, dynamic>{'api_key': _apiKey, 'session_id': sessionId},
+      <String, dynamic>{'api_key': Configuration.apiKey, 'session_id': sessionId},
     );
     return result;
   }
@@ -271,22 +271,22 @@ class ApiClient {
       final responce = MovieDetailsType.fromJson(jsonMap);
       return responce;
     };
-    final result = _getUniversal('/movie/$movieId', parser, <String, dynamic>{
+    final result = _networkClient.getUniversal('/movie/$movieId', parser, <String, dynamic>{
       'append_to_response': 'credits,videos',
-      'api_key': _apiKey,
+      'api_key': Configuration.apiKey,
       'language': language,
     });
     return result;
   }
 }
 
-extension HttpClientResJsonDecode on HttpClientResponse {
-  Future<dynamic> jsonDecode() async {
-    return transform(
-      utf8.decoder,
-    ).toList().then((value) => value.join()).then((v) => json.decode(v));
-  }
-}
+// extension HttpClientResJsonDecode on HttpClientResponse {
+//   Future<dynamic> jsonDecode() async {
+//     return transform(
+//       utf8.decoder,
+//     ).toList().then((value) => value.join()).then((v) => json.decode(v));
+//   }
+// }
 
 // val_done_dart
 // Val228
