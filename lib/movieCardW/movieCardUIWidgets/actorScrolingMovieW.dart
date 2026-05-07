@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/domain/apiClient/apiClient.dart' show ApiClient;
+import 'package:prog_lazy_f/domain/apiClient/imageDownloader.dart'
+    show ImageDownloader;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
@@ -91,7 +92,7 @@ class _ActorItemW extends StatelessWidget {
             children: [
               actorImagePath != null
                   ? Image.network(
-                      ApiClient.imageUrl(actorImagePath),
+                      ImageDownloader.imageUrl(actorImagePath),
                       width: 120,
                       height: 120,
                       fit: BoxFit.fitWidth,
