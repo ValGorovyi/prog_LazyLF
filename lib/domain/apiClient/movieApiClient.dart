@@ -1,32 +1,21 @@
-import 'dart:convert';
-import 'dart:io';
-
+import 'package:prog_lazy_f/configuration/configuration.dart'
+    show Configuration;
+import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart'
+    show ApiClientExeptionType;
+import 'package:prog_lazy_f/domain/apiClient/networkClient.dart'
+    show NetworkClient;
 import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
     show MovieDetailsType;
 import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
     show popularMoviesResponceType;
 
-
-
-extension MediaTypeAsString on MediaType {
-  String asString() {
-    switch (this) {
-      case MediaType.Movie:
-        return 'movie';
-      case MediaType.TV:
-        return 'tv';
-    }
-  }
-}
-
-enum MediaType { Movie, TV }
 class ApiClientExeption implements Exception {
   final ApiClientExeptionType type;
   ApiClientExeption(this.type);
 }
 
-class ApiClient {
-  final _networkClient= NetworkClient(); //import
+class MovieApiClient {
+  final _networkClient = NetworkClient();
 
   // static const _host = 'https://api.themoviedb.org/3';
   // static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
@@ -46,72 +35,6 @@ class ApiClient {
   //     return myUri;
   //   }
   // }
-
-  Future<String> auth({
-    required String username,
-    required String password,
-  }) async {
-    final token = await _makeToken();
-    final validToken = await _validateUser(
-      userName: username,
-      password: password,
-      requestToken: token,
-    );
-    final sessionId = _makeSession(requestToken: validToken);
-    return sessionId;
-  }
-
-  Future<String> _makeToken() async {
-    final parser = (dynamic json) {
-      final jsonMap = json as Map<String, dynamic>;
-      final token = json['request_token'] as String;
-      return token;
-    };
-    final result = _networkClient.getUniversal(
-      '/authentication/token/new',
-      parser,
-      <String, dynamic>{'api_key': Configuration.apiKey},
-    );
-    return result;
-  }
-
-  Future<String> _validateUser({
-    required String userName,
-    required String password,
-    required String requestToken,
-  }) async {
-    final parser = (dynamic json) {
-      final jsonMap = json as Map<String, dynamic>;
-      final token = json['request_token'] as String;
-      return token;
-    };
-    final result = _networkClient.postUniversal(
-      '/authentication/token/validate_with_login',
-      parser,
-      <String, dynamic>{
-        'username': userName,
-        'password': password,
-        'request_token': requestToken,
-      },
-      <String, dynamic>{'api_key': Configuration.apiKey},
-    );
-    return result;
-  }
-
-  Future<String> _makeSession({required String requestToken}) async {
-    final parser = (dynamic json) {
-      final jsonMap = json as Map<String, dynamic>;
-      final sessionId = jsonMap['session_id'] as String;
-      return sessionId;
-    };
-    final result = _networkClient.postUniversal(
-      '/authentication/session/new',
-      parser,
-      <String, dynamic>{'request_token': requestToken},
-      <String, dynamic>{'api_key': Configuration.apiKey},
-    );
-    return result;
-  }
 
   // void _validateResponce(HttpClientResponse responce, dynamic json) {
   //   if (responce.statusCode == 401) {
@@ -175,46 +98,42 @@ class ApiClient {
   //   }
   // }
 
-  Future<int> getAccId(String sessionId) async {
-    final parser = (dynamic json) {
-      final jsonMap = json as Map<String, dynamic>;
-      final result = jsonMap['id'] as int;
-      return result;
-    };
-    final result = _networkClient.getUniversal('/account', parser, <String, dynamic>{
-      'api_key': Configuration.apiKey,
-      'session_id': sessionId,
-    });
-    return result;
-  }
-
   Future<popularMoviesResponceType> popularMovie(
     int page,
     String language,
   ) async {
-    final parser = (dynamic json) {
+    popularMoviesResponceType parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final responce = popularMoviesResponceType.fromJson(jsonMap);
       return responce;
-    };
-    final result = _networkClient.getUniversal('/movie/popular', parser, <String, dynamic>{
-      'api_key': Configuration.apiKey,
-      'page': page.toString(),
-      'language': language,
-    });
+    }
+
+    final result = _networkClient.getUniversal(
+      '/movie/popular',
+      parser,
+      <String, dynamic>{
+        'api_key': Configuration.apiKey,
+        'page': page.toString(),
+        'language': language,
+      },
+    );
     return result;
   }
 
   Future<bool> isFavorire(int movieId, String sessionId) async {
-    final parser = (dynamic json) {
+    bool parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final favoriteJson = jsonMap['favorite'] as bool;
       return favoriteJson;
-    };
+    }
+
     final result = _networkClient.getUniversal(
       '/movie/$movieId/account_states',
       parser,
-      <String, dynamic>{'session_id': sessionId, 'api_key': Configuration.apiKey},
+      <String, dynamic>{
+        'session_id': sessionId,
+        'api_key': Configuration.apiKey,
+      },
     );
     return result;
   }
@@ -224,58 +143,36 @@ class ApiClient {
     String language,
     String query,
   ) async {
-    final parser = (dynamic json) {
+    popularMoviesResponceType parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final responce = popularMoviesResponceType.fromJson(jsonMap);
       return responce;
-    };
-    final result = _networkClient.getUniversal('/search/movie', parser, <String, dynamic>{
-      'api_key': Configuration.apiKey,
-      'page': page.toString(),
-      'language': language,
-      'query': query,
-      'include_adult': true.toString(),
-    });
-    return result;
-  }
+    }
 
-  Future<int> markAsFavorite({
-    required int accountId,
-    required String sessionId,
-    required MediaType mediaType,
-    required int mediaId,
-    required bool favorite,
-  }) async {
-    /// kostil !
-    final parser = (dynamic json) {
-      return 1;
-    };
-
-    final paramsBody = <String, dynamic>{
-      'media_type': mediaType.asString(),
-      'media_id': mediaId,
-      'favorite': favorite,
-    };
-    final result = _networkClient.postUniversal(
-      '/account/$accountId/favorite',
-      parser,
-      paramsBody,
-      <String, dynamic>{'api_key': Configuration.apiKey, 'session_id': sessionId},
-    );
+    final result = _networkClient
+        .getUniversal('/search/movie', parser, <String, dynamic>{
+          'api_key': Configuration.apiKey,
+          'page': page.toString(),
+          'language': language,
+          'query': query,
+          'include_adult': true.toString(),
+        });
     return result;
   }
 
   Future<MovieDetailsType> movieDetails(int movieId, String language) async {
-    final parser = (dynamic json) {
+    MovieDetailsType parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final responce = MovieDetailsType.fromJson(jsonMap);
       return responce;
-    };
-    final result = _networkClient.getUniversal('/movie/$movieId', parser, <String, dynamic>{
-      'append_to_response': 'credits,videos',
-      'api_key': Configuration.apiKey,
-      'language': language,
-    });
+    }
+
+    final result = _networkClient
+        .getUniversal('/movie/$movieId', parser, <String, dynamic>{
+          'append_to_response': 'credits,videos',
+          'api_key': Configuration.apiKey,
+          'language': language,
+        });
     return result;
   }
 }

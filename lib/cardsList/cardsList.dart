@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show movieCardsListModel;
-import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';
+import 'package:prog_lazy_f/domain/apiClient/imageDownloader.dart'
+    show ImageDownloader;
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
 
@@ -75,7 +76,7 @@ class MovieCards extends StatelessWidget {
                         // Image(image: AssetImage(oneMovie.imageMovie)),
                         movieImageSrc != null
                             ? Image.network(
-                                ApiClient.imageUrl(movieImageSrc),
+                                ImageDownloader.imageUrl(movieImageSrc),
                                 width: 95,
                               )
                             : const SizedBox.shrink(),

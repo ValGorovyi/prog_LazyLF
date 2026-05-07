@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/domain/apiClient/apiClient.dart' show ApiClient;
+import 'package:prog_lazy_f/domain/apiClient/imageDownloader.dart'
+    show ImageDownloader;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
@@ -18,14 +19,14 @@ class TopPosterImageW extends StatelessWidget {
       child: Stack(
         children: [
           backdropPath != null
-              ? Image.network(ApiClient.imageUrl(backdropPath))
+              ? Image.network(ImageDownloader.imageUrl(backdropPath))
               : SizedBox.shrink(),
           Positioned(
             top: 20,
             left: 20,
             bottom: 20,
             child: posterPath != null
-                ? Image.network(ApiClient.imageUrl(posterPath))
+                ? Image.network(ImageDownloader.imageUrl(posterPath))
                 : SizedBox.shrink(),
           ),
           Positioned(

@@ -1,22 +1,22 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:prog_lazy_f/configuration/configuration.dart';
 import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart';
 // 14
 
-class NetworkClient{
+class NetworkClient {
   final _client = HttpClient();
 
-    Uri _createUri( String path, [Map<String, dynamic>? parameters]) {
-    final myUri = Uri.parse(path);
+  Uri _createUri(String path, [Map<String, dynamic>? parameters]) {
+    final myUri = Uri.parse('${Configuration.host}$path');
     if (parameters != null) {
       return myUri.replace(queryParameters: parameters);
     } else {
       return myUri;
     }
   }
-  
 
-    Future<T> getUniversal<T>(
+  Future<T> getUniversal<T>(
     String path,
     T Function(dynamic json) parser, [
     Map<String, dynamic>? parameters,
@@ -39,7 +39,7 @@ class NetworkClient{
     }
   }
 
-    Future<T> postUniversal<T>(
+  Future<T> postUniversal<T>(
     String path,
     T Function(dynamic json) parser,
     Map<String, dynamic> bodyParams, [
@@ -64,7 +64,7 @@ class NetworkClient{
     }
   }
 
-    void _validateResponce(HttpClientResponse responce, dynamic json) {
+  void _validateResponce(HttpClientResponse responce, dynamic json) {
     if (responce.statusCode == 401) {
       final dynamic statusCodeInt = json['status_code'];
       final code = statusCodeInt is int ? statusCodeInt : 0;

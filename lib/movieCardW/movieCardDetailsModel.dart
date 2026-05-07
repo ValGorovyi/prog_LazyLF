@@ -2,13 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show BuildContext;
 import 'package:flutter/widgets.dart' show Localizations;
 import 'package:intl/intl.dart';
-import 'package:prog_lazy_f/domain/apiClient/apiClient.dart';
+import 'package:prog_lazy_f/domain/apiClient/accountApiClient.dart'
+    show AccountApiClient, MediaType;
+import 'package:prog_lazy_f/domain/apiClient/movieApiClient.dart';
+import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart'
+    show ApiClientExeptionType;
 import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
 import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
     show MovieDetailsType;
 
 class MovieCardDetailsModel extends ChangeNotifier {
-  final _apiCl = ApiClient();
+  final _movieApiCl = MovieApiClient();
+  final _accountApiCl = AccountApiClient();
   final _sessionDataPr = SessionDataProvider();
   final int movieId;
   String _locale = '';
@@ -34,10 +39,10 @@ class MovieCardDetailsModel extends ChangeNotifier {
 
   Future<void> loadDetails() async {
     try {
-      _MovieDetailsType = await _apiCl.movieDetails(movieId, _locale);
+      _MovieDetailsType = await _movieApiCl.movieDetails(movieId, _locale);
       final sessionId = await _sessionDataPr.getSessionId();
       if (sessionId != null) {
-        _isFavorite = await _apiCl.isFavorire(movieId, sessionId);
+        _isFavorite = await _movieApiCl.isFavorire(movieId, sessionId);
       }
       notifyListeners();
     } on ApiClientExeption catch (e) {
@@ -63,7 +68,7 @@ class MovieCardDetailsModel extends ChangeNotifier {
     _isFavorite = newValueIsFavorite;
     notifyListeners();
     try {
-      await _apiCl.markAsFavorite(
+      await _accountApiCl.markAsFavorite(
         accountId: accId,
         sessionId: sessionId,
         mediaType: MediaType.Movie,
