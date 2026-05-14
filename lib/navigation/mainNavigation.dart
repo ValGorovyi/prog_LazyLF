@@ -15,13 +15,9 @@ class MainNavigation {
   final routes = <String, Widget Function(BuildContext)>{
     NavigationRoutesNames.loaderRoute: (_) => _screenFactory.createLoaderW(),
     NavigationRoutesNames.authRoute: (_) => _screenFactory.creareAuthW(),
+    //list of movie
     NavigationRoutesNames.mainRoute: (_) => _screenFactory.createMainScreenW(),
   };
-  // String initialRoute(bool isAuth) {
-  //   return isAuth
-  //       ? NavigationRoutesNames.mainRoute
-  //       : NavigationRoutesNames.authRoute;
-  // }
 
   Route<Object> onGererateRoutes(RouteSettings settings) {
     switch (settings.name) {

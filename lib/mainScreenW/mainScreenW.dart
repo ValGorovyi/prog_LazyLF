@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/cardsList/cardsList.dart';
-import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
-    show movieCardsListModel;
+
 import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
+import 'package:prog_lazy_f/domain/factoryes/screenFactory.dart'
+    show ScreenFactory;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart';
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
 
 class MainScreenW extends StatefulWidget {
   const MainScreenW({super.key});
@@ -23,14 +21,15 @@ class _MainScreenW extends State<MainScreenW> {
     });
   }
 
-  final movieListM = movieCardsListModel();
+  // final movieListM = movieCardsListModel();
+  final _screenFactory = ScreenFactory();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    movieListM.setupLocate(context);
-    // movieListM.loadMovies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   movieListM.setupLocate(context);
+  //   // movieListM.loadMovies();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,20 +51,16 @@ class _MainScreenW extends State<MainScreenW> {
       body: IndexedStack(
         index: _selectedIndex,
         children: [
-          UniversalInheritNitifier(
-            create: () => movieListM,
-            isManagingModel: false,
-            child: const MovieCards(),
-          ),
-          const Text('News'),
-          const Text('About us'),
+          _screenFactory.createMovieListW(),
+          _screenFactory.createNewsW(),
+          _screenFactory.createAboutUsW(),
         ],
       ),
       // body: Center(child: _ontaperWidget[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => onTapItemBar(index),
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Movi'),
           BottomNavigationBarItem(icon: Icon(Icons.newspaper), label: 'News'),
           BottomNavigationBarItem(

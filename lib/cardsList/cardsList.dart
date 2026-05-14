@@ -1,41 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
-    show movieCardsListModel;
+    show MovieCardsListModel;
 import 'package:prog_lazy_f/domain/apiClient/imageDownloader.dart'
     show ImageDownloader;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
 
-class MovieCards extends StatelessWidget {
+import 'package:provider/provider.dart';
+
+class MovieCards extends StatefulWidget {
   const MovieCards({super.key});
 
+  @override
+  State<MovieCards> createState() => _MovieCardsState();
+}
+
+class _MovieCardsState extends State<MovieCards> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.read<MovieCardsListModel>().setupLocate(context);
+  }
+
   // void tabToMovie(index) {
-  //   final id = _moviesDemoList[index].id;
-  //   Navigator.of(
-  //     context,
-  //   ).pushNamed(NavigationRoutesNames.idRoute, arguments: id);
-  // }
-
-  // final _searchController = TextEditingController();
-
-  // var filteredMovies = <Movie>[];
-
-  // void _searchMovies() {
-  //   final queryText = _searchController.text;
-  //   if (queryText.isNotEmpty) {
-  //     filteredMovies = _moviesDemoList.where((Movie movie) {
-  //       return movie.title.toUpperCase().contains(queryText.toUpperCase());
-  //     }).toList();
-  //   } else {
-  //     filteredMovies = _moviesDemoList;
-  //   }
-  //   setState(() {});
-  // }
-
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<movieCardsListModel>(context);
-    if (model == null) return Text('error with model??');
+    final model = context.watch<MovieCardsListModel>();
     return Stack(
       children: [
         ListView.builder(

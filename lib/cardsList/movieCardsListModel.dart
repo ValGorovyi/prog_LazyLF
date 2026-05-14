@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:prog_lazy_f/domain/apiClient/movieApiClient.dart';
@@ -9,7 +8,7 @@ import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart';
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'
     show NavigationRoutesNames;
 
-class movieCardsListModel extends ChangeNotifier {
+class MovieCardsListModel extends ChangeNotifier {
   final _apiCl = MovieApiClient();
   final _movies = <MovieType>[];
   List<MovieType> get movies => List.unmodifiable(_movies);

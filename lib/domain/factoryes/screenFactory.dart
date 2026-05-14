@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/authW/authModel.dart' show AuthViewModel;
 import 'package:prog_lazy_f/authW/authW.dart' show AuthorizW;
+import 'package:prog_lazy_f/cardsList/cardsList.dart' show MovieCards;
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
-    show movieCardsListModel;
+    show MovieCardsListModel;
 import 'package:prog_lazy_f/loaderW/loaderModel.dart' show LoaderVieWModel;
 import 'package:prog_lazy_f/loaderW/loaderWidget.dart' show LoaderWidget;
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
@@ -31,10 +32,7 @@ class ScreenFactory {
   }
 
   Widget createMainScreenW() {
-    return UniversalInheritNitifier(
-      create: () => movieCardsListModel(),
-      child: MainScreenW(),
-    );
+    return const MainScreenW();
   }
 
   Widget createMovieCardW(int movieId) {
@@ -46,5 +44,20 @@ class ScreenFactory {
 
   Widget createMovieTrailerW(String youtubeKey) {
     return MovieTrailerW(youtubeKey: youtubeKey);
+  }
+
+  Widget createMovieListW() {
+    return ChangeNotifierProvider(
+      create: (_) => MovieCardsListModel(),
+      child: const MovieCards(),
+    );
+  }
+
+  Widget createNewsW() {
+    return const Text('News');
+  }
+
+  Widget createAboutUsW() {
+    return const Text('About us');
   }
 }
