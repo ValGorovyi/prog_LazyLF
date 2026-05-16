@@ -8,17 +8,34 @@ import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart';
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'
     show NavigationRoutesNames;
 
+class MovieListItemRowData {
+  final String title;
+  final String overview;
+  final String releaseDate;
+  final String? posterPath;
+  final int id;
+
+  MovieListItemRowData({
+    required this.title,
+    required this.overview,
+    required this.releaseDate,
+    required this.posterPath,
+    required this.id,
+  });
+}
+
 class MovieCardsListModel extends ChangeNotifier {
   final _apiCl = MovieApiClient();
-  final _movies = <MovieType>[];
-  List<MovieType> get movies => List.unmodifiable(_movies);
-  late DateFormat _dateFormat;
+  Timer? searchDebounce;
   String _locale = '';
+
+  final _movies = <MovieListItemRowData>[];
+  List<MovieListItemRowData> get movies => List.unmodifiable(_movies);
+  late DateFormat _dateFormat;
   late int _currentPage;
   late int _totalPage;
   var _isLoadingInProgress = false;
   String? _searchQueryText;
-  Timer? searchDebounce;
 
   String stringFormatDate(DateTime? date) {
     if (date != null) return _dateFormat.format(date);
@@ -43,7 +60,7 @@ class MovieCardsListModel extends ChangeNotifier {
         nextPage,
         _locale,
       ); // 'ru-RU' // 'en-US'
-      _movies.addAll(_moviesRes.movies);
+      _movies.addAll(_moviesRes.movies.map(_makeMovieListItemRowData).toList());
       _currentPage = _moviesRes.page;
       _totalPage = _moviesRes.totalPages;
       _isLoadingInProgress = false;
@@ -52,6 +69,20 @@ class MovieCardsListModel extends ChangeNotifier {
       //
       _isLoadingInProgress = false;
     }
+  }
+
+  MovieListItemRowData _makeMovieListItemRowData(MovieType movieGlobalData) {
+    final releaseDate = movieGlobalData.releaseDate;
+    final releaseDateTitle = releaseDate != null
+        ? _dateFormat.format(releaseDate)
+        : '';
+    return MovieListItemRowData(
+      id: movieGlobalData.id,
+      title: movieGlobalData.title,
+      overview: movieGlobalData.overview,
+      releaseDate: releaseDateTitle,
+      posterPath: movieGlobalData.posterPath,
+    );
   }
 
   void onMovieTap(BuildContext context, int index) {
@@ -100,3 +131,6 @@ class MovieCardsListModel extends ChangeNotifier {
     _loadMoviesFromPage();
   }
 }
+
+
+//38

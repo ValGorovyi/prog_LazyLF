@@ -23,107 +23,129 @@ class _MovieCardsState extends State<MovieCards> {
   // void tabToMovie(index) {
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<MovieCardsListModel>();
-    return Stack(
-      children: [
-        ListView.builder(
-          physics: BouncingScrollPhysics(),
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.only(top: 52),
-          itemCount: model.movies.length,
-          itemExtent: 164,
+    // final model = context.watch<MovieCardsListModel>();
+    return Stack(children: [_MovieListItemsW(), _SearchW()]);
+  }
+}
 
-          itemBuilder: (BuildContext context, int index) {
-            final oneMovie = model.movies[index];
-            final movieImageSrc = oneMovie.posterPath;
-            final movieReleaseDate = oneMovie.releaseDate;
-            model.showMovieAtIndex(index);
-            return Padding(
-              padding: EdgeInsetsGeometry.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              child: Stack(
-                children: [
-                  Container(
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade300,
+class _SearchW extends StatelessWidget {
+  const _SearchW();
 
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
-                      border: Border.all(color: Colors.black12),
-                      borderRadius: BorderRadiusGeometry.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        // Image(image: AssetImage(oneMovie.imageMovie)),
-                        movieImageSrc != null
-                            ? Image.network(
-                                ImageDownloader.imageUrl(movieImageSrc),
-                                width: 95,
-                              )
-                            : const SizedBox.shrink(),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 10),
-                              Text(
-                                oneMovie.title,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                model.stringFormatDate(movieReleaseDate),
-                                style: TextStyle(color: Colors.black45),
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(),
-                                oneMovie.overview,
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 6),
-                      ],
-                    ),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () => model.onMovieTap(context, index),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+  @override
+  Widget build(BuildContext context) {
+    final model = context.read<MovieCardsListModel>();
+    return Padding(
+      padding: EdgeInsetsGeometry.only(top: 4),
+      child: TextField(
+        onChanged: model.searchMovie,
+        decoration: InputDecoration(
+          labelText: 'Search',
+          filled: true,
+          fillColor: Colors.white.withAlpha(235),
+          border: OutlineInputBorder(),
         ),
-        Padding(
-          padding: EdgeInsetsGeometry.only(top: 4),
-          child: TextField(
-            onChanged: model.searchMovie,
-            decoration: InputDecoration(
-              labelText: '...',
-              filled: true,
-              fillColor: Colors.white.withAlpha(235),
-              border: OutlineInputBorder(),
+      ),
+    );
+  }
+}
+
+class _MovieListItemsW extends StatelessWidget {
+  const _MovieListItemsW();
+
+  @override
+  Widget build(BuildContext context) {
+    final model = context.watch<MovieCardsListModel>();
+    return ListView.builder(
+      physics: BouncingScrollPhysics(),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: EdgeInsets.only(top: 52),
+      itemCount: model.movies.length,
+      itemExtent: 164,
+
+      itemBuilder: (BuildContext context, int index) {
+        model.showMovieAtIndex(index);
+        return _MovieListRowItemW(indexMovie: index);
+      },
+    );
+  }
+}
+
+class _MovieListRowItemW extends StatelessWidget {
+  final int indexMovie;
+  const _MovieListRowItemW({required this.indexMovie});
+  @override
+  Widget build(BuildContext context) {
+    final model = context.read<MovieCardsListModel>();
+
+    final oneMovie = model.movies[indexMovie];
+    final movieImageSrc = oneMovie.posterPath;
+    // model.showMovieAtIndex(indexMovie);
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 16, vertical: 8),
+      child: Stack(
+        children: [
+          Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade300,
+
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
+              border: Border.all(color: Colors.black12),
+              borderRadius: BorderRadiusGeometry.circular(10),
+            ),
+            child: Row(
+              children: [
+                // Image(image: AssetImage(oneMovie.imageMovie)),
+                if (movieImageSrc != null)
+                  Image.network(
+                    ImageDownloader.imageUrl(movieImageSrc),
+                    width: 95,
+                  ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 10),
+                      Text(
+                        oneMovie.title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        oneMovie.releaseDate,
+                        style: TextStyle(color: Colors.black45),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(),
+                        oneMovie.overview,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 6),
+              ],
             ),
           ),
-        ),
-      ],
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => model.onMovieTap(context, indexMovie),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
