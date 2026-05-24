@@ -101,6 +101,7 @@ class MovieApiClient {
   Future<popularMoviesResponceType> popularMovie(
     int page,
     String language,
+    String apiKey,
   ) async {
     popularMoviesResponceType parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
@@ -112,7 +113,7 @@ class MovieApiClient {
       '/movie/popular',
       parser,
       <String, dynamic>{
-        'api_key': Configuration.apiKey,
+        'api_key': apiKey,
         'page': page.toString(),
         'language': language,
       },
@@ -142,6 +143,7 @@ class MovieApiClient {
     int page,
     String language,
     String query,
+    String apiKey,
   ) async {
     popularMoviesResponceType parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
@@ -151,7 +153,7 @@ class MovieApiClient {
 
     final result = _networkClient
         .getUniversal('/search/movie', parser, <String, dynamic>{
-          'api_key': Configuration.apiKey,
+          'api_key': apiKey,
           'page': page.toString(),
           'language': language,
           'query': query,
