@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
+// import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
 
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart';
 import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/aboutMovieW.dart'
@@ -12,7 +12,7 @@ import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/topPosterImageW.dart'
     show TopPosterImageW;
 import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
     show UniversalInheritNitifier;
-import 'package:prog_lazy_f/universalInherit/universalInheritProvider.dart';
+// import 'package:prog_lazy_f/universalInherit/universalInheritProvider.dart';
 
 class MovieCardW extends StatefulWidget {
   const MovieCardW({super.key});
@@ -23,16 +23,7 @@ class MovieCardW extends StatefulWidget {
 
 class _MovieCardWState extends State<MovieCardW> {
   @override
-  void initState() {
-    super.initState();
-    final model = UniversalInheritNitifier.read<MovieCardDetailsModel>(context);
-    final appModel = UniversalInheritProvider.read<AppModel>(context);
-    model?.onSessionExpired = () => appModel?.resetSession(context);
-  }
-
-  @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     UniversalInheritNitifier.read<MovieCardDetailsModel>(
       context,

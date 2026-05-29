@@ -40,7 +40,7 @@ class _MainScreenW extends State<MainScreenW> {
           IconButton(
             // demo code
             onPressed: () {
-              SessionDataProvider().setSessionId(null);
+              SessionDataProvider().deleteSessionId();
               MainNavigation.resetNavigatot(context);
             },
             //

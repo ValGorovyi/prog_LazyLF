@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/domain/apiClient/movieApiClient.dart'
-    show ApiClientExeption;
+
 import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart'
-    show ApiClientExeptionType;
+    show ApiClientExeptionType, ApiClientExeption;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart' show MainNavigation;
 import 'package:prog_lazy_f/services/authService.dart' show AuthService;
 

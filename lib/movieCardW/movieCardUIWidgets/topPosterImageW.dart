@@ -33,7 +33,7 @@ class TopPosterImageW extends StatelessWidget {
             top: 6,
             right: 10,
             child: IconButton(
-              onPressed: () => model?.toggleFavorite(),
+              onPressed: () => model?.toggleFavorite(context),
               icon: Icon(
                 model?.isFavorite == true
                     ? Icons.favorite

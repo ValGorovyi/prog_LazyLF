@@ -9,10 +9,10 @@ import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
 import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
     show popularMoviesResponceType;
 
-class ApiClientExeption implements Exception {
-  final ApiClientExeptionType type;
-  ApiClientExeption(this.type);
-}
+// class ApiClientExeption implements Exception {
+//   final ApiClientExeptionType type;
+//   ApiClientExeption(this.type);
+// }
 
 class MovieApiClient {
   final _networkClient = NetworkClient();
