@@ -61,7 +61,7 @@ class _MainScreenW extends State<MainScreenW> {
         currentIndex: _selectedIndex,
         onTap: (index) => onTapItemBar(index),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Movi'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Movies'),
           BottomNavigationBarItem(icon: Icon(Icons.newspaper), label: 'News'),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_brightness),

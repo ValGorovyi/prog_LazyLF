@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart'
-    show SessionDataProvider;
-import 'package:prog_lazy_f/navigation/mainNavigation.dart'
-    show NavigationRoutesNames;
+// import 'package:flutter/material.dart';
+// import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart'
+//     show SessionDataProvider;
+// import 'package:prog_lazy_f/navigation/mainNavigation.dart'
+//     show NavigationRoutesNames;
 
 // class AppModel {
 //   final _sessionDataProvider = SessionDataProvider();

@@ -3,8 +3,9 @@ import 'package:prog_lazy_f/domain/entity/movieDetailsCredits.dart'
     show Employee;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
+// import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
+//     show UniversalInheritNitifier;
+import 'package:provider/provider.dart';
 
 import 'textColorRGBA.dart';
 
@@ -13,12 +14,15 @@ class DetailsCardMovieW extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
+    // final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+    //   context,
+    // );
+    var crew = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails?.credits.crew,
     );
-    if (model == null) return SizedBox.shrink();
-    var crew = model.movieDetails?.credits.crew;
-    if (crew == null || crew.isEmpty) return SizedBox.shrink();
+    if (crew == null) return SizedBox.shrink();
+    // var crew = model.movieDetails?.credits.crew;
+    if (crew.isEmpty) return SizedBox.shrink();
     crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
 
     var crewChunks = <List<Employee>>[];
@@ -49,12 +53,15 @@ class _CrewWidget extends StatelessWidget {
   const _CrewWidget({required this.employes});
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
+    // final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+    //   context,
+    // );
+    var crew = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails?.credits.crew,
     );
-    if (model == null) return SizedBox.shrink();
-    var crew = model.movieDetails?.credits.crew;
-    if (crew == null || crew.isEmpty) return SizedBox.shrink();
+    if (crew == null) return SizedBox.shrink();
+    // var crew = model.movieDetails?.credits.crew;
+    if (crew.isEmpty) return SizedBox.shrink();
     crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
 
     var crewChunks = <List<Employee>>[];
@@ -74,7 +81,7 @@ class _CrewWidget extends StatelessWidget {
 
 class _ColumnEmployeeW extends StatelessWidget {
   final Employee employee;
-  _ColumnEmployeeW({required this.employee});
+  const _ColumnEmployeeW({required this.employee});
 
   @override
   Widget build(BuildContext context) {

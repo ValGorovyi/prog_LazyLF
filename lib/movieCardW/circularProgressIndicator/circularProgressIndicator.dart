@@ -3,19 +3,22 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
+// import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
+//     show UniversalInheritNitifier;
+import 'package:provider/provider.dart';
 
 class CircularProgressCustom extends StatelessWidget {
+  const CircularProgressCustom({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
+    final _voteAverage = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails?.voteAverage,
     );
-    var statistickInPercent = model?.movieDetails?.voteAverage ?? 0;
+    var statistickInPercent = _voteAverage ?? 0;
     statistickInPercent = statistickInPercent * 10;
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 60,
         height: 60,
         child: RadialPersentWidget(

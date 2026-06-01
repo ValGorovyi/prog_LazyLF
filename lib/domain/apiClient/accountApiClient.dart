@@ -42,7 +42,7 @@ class AccountApiClient {
       paramsBody,
       <String, dynamic>{
         'api_key': Configuration.apiKey,
-        'session_id': 'sessionId',
+        'session_id': sessionId,
       },
     );
     return result;

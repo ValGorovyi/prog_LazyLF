@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:prog_lazy_f/appModel/appModel.dart' show AppModel;
-
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart';
 import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/aboutMovieW.dart'
     show AboutMovieW;
@@ -10,9 +8,8 @@ import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/detailsCardMovieW.dart
     show DetailsCardMovieW;
 import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/topPosterImageW.dart'
     show TopPosterImageW;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
-// import 'package:prog_lazy_f/universalInherit/universalInheritProvider.dart';
+
+import 'package:provider/provider.dart';
 
 class MovieCardW extends StatefulWidget {
   const MovieCardW({super.key});
@@ -25,9 +22,7 @@ class _MovieCardWState extends State<MovieCardW> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    UniversalInheritNitifier.read<MovieCardDetailsModel>(
-      context,
-    )?.setupLocate(context);
+    context.read<MovieCardDetailsModel>().setupLocate(context);
   }
 
   @override
@@ -44,36 +39,35 @@ class _MovieCardWState extends State<MovieCardW> {
   }
 }
 
+class _AppTitleInDetailsW extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final titleText = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails?.title,
+    );
+    return Text(titleText ?? 'Loading...');
+  }
+}
+
 class _BodyCardW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
+    final movieDetails = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails,
     );
-    final movieDetails = model?.movieDetails;
     if (movieDetails == null) {
       return const Center(child: CircularProgressIndicator());
     }
     return ListView(
       children: [
         TopPosterImageW(),
-        SizedBox(height: 20),
-        AboutMovieW(),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
+        const AboutMovieW(),
+        const SizedBox(height: 20),
 
-        DetailsCardMovieW(),
+        const DetailsCardMovieW(),
         ActorScrolingMovieW(),
       ],
     );
-  }
-}
-
-class _AppTitleInDetailsW extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
-    );
-    return Text(model?.movieDetails?.title ?? 'Loading...');
   }
 }

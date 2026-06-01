@@ -11,8 +11,7 @@ import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
 import 'package:prog_lazy_f/movieCardW/movieCardW.dart' show MovieCardW;
 import 'package:prog_lazy_f/trailerW/trailerW.dart' show MovieTrailerW;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
+
 import 'package:provider/provider.dart';
 
 class ScreenFactory {
@@ -36,8 +35,8 @@ class ScreenFactory {
   }
 
   Widget createMovieCardW(int movieId) {
-    return UniversalInheritNitifier(
-      create: () => MovieCardDetailsModel(movieId),
+    return ChangeNotifierProvider(
+      create: (_) => MovieCardDetailsModel(movieId),
       child: const MovieCardW(),
     );
   }

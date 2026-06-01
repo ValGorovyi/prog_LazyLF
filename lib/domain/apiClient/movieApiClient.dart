@@ -1,18 +1,11 @@
 import 'package:prog_lazy_f/configuration/configuration.dart'
     show Configuration;
-import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart'
-    show ApiClientExeptionType;
 import 'package:prog_lazy_f/domain/apiClient/networkClient.dart'
     show NetworkClient;
 import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
     show MovieDetailsType;
 import 'package:prog_lazy_f/domain/entity/popularMoviesRes.dart'
     show popularMoviesResponceType;
-
-// class ApiClientExeption implements Exception {
-//   final ApiClientExeptionType type;
-//   ApiClientExeption(this.type);
-// }
 
 class MovieApiClient {
   final _networkClient = NetworkClient();

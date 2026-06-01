@@ -3,16 +3,17 @@ import 'package:prog_lazy_f/domain/apiClient/imageDownloader.dart'
     show ImageDownloader;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
+// import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
+//     show UniversalInheritNitifier;
+import 'package:provider/provider.dart';
 
 class ActorScrolingMovieW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
+    final casts = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails?.credits.cast,
     );
-    var casts = model?.movieDetails?.credits.cast;
+    ;
 
     if (casts == null || casts.isEmpty) return SizedBox.fromSize();
     final lengthBuilder = casts.length;
@@ -67,9 +68,13 @@ class _ActorItemW extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.read<MovieCardDetailsModel>(context);
-    final actorItemData = model!.movieDetails!.credits.cast[actorIndex];
-    final actorImagePath = actorItemData.profilePath;
+    // final model = UniversalInheritNitifier.read<MovieCardDetailsModel>(context);
+    // final actorItemData = model!.movieDetails!.credits.cast[actorIndex];
+    final actorItemData = context.select(
+      (MovieCardDetailsModel model) =>
+          model.movieDetails?.credits.cast[actorIndex],
+    );
+    final actorImagePath = actorItemData?.profilePath;
     return Padding(
       padding: EdgeInsetsGeometry.all(8),
       child: DecoratedBox(
@@ -102,8 +107,8 @@ class _ActorItemW extends StatelessWidget {
                 padding: EdgeInsets.all(8),
                 child: Column(
                   children: [
-                    Text(actorItemData.name, maxLines: 1),
-                    Text(actorItemData.character ?? '!!!', maxLines: 3),
+                    Text(actorItemData?.name ?? '---', maxLines: 1),
+                    Text(actorItemData?.character ?? '!!!', maxLines: 3),
                   ],
                 ),
               ),

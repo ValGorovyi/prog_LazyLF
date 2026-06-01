@@ -23,7 +23,6 @@ class _MovieCardsState extends State<MovieCards> {
   // void tabToMovie(index) {
   @override
   Widget build(BuildContext context) {
-    // final model = context.watch<MovieCardsListModel>();
     return Stack(children: [_MovieListItemsW(), _SearchW()]);
   }
 }
@@ -75,11 +74,14 @@ class _MovieListRowItemW extends StatelessWidget {
   const _MovieListRowItemW({required this.indexMovie});
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieCardsListModel>();
-
-    final oneMovie = model.movies[indexMovie];
+    final oneMovie = context.select(
+      (MovieCardsListModel model) => model.movies[indexMovie],
+    );
     final movieImageSrc = oneMovie.posterPath;
-    // model.showMovieAtIndex(indexMovie);
+    final overview = oneMovie.overview;
+    final onMovieTapFunc = context.select(
+      (MovieCardsListModel model) => model.onMovieTap,
+    );
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 16, vertical: 8),
       child: Stack(
@@ -127,7 +129,7 @@ class _MovieListRowItemW extends StatelessWidget {
                       Text(
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(),
-                        oneMovie.overview,
+                        overview,
                         maxLines: 2,
                       ),
                     ],
@@ -141,7 +143,7 @@ class _MovieListRowItemW extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: () => model.onMovieTap(context, indexMovie),
+              onTap: () => onMovieTapFunc(context, indexMovie),
             ),
           ),
         ],

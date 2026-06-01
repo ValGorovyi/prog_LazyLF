@@ -7,49 +7,54 @@ import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/textColorRGBA.dart'
     show TextCardWColor;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'
     show NavigationRoutesNames;
-import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
-    show UniversalInheritNitifier;
+import 'package:provider/provider.dart';
 
 class AboutMovieW extends StatelessWidget {
   const AboutMovieW({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-      context,
+    // final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
+    //   context,
+    // );
+    final _movieDetails = context.select(
+      (MovieCardDetailsModel model) => model.movieDetails,
     );
-    if (model == null) return const SizedBox.shrink();
-    var year = model.movieDetails?.releaseDate?.year.toString();
+    final stringFromDateFunc = context
+        .read<MovieCardDetailsModel>()
+        .stringFromDate;
+    if (_movieDetails == null) return const SizedBox.shrink();
+    var year = _movieDetails.releaseDate?.year.toString();
     year = year != null ? ' ( $year )' : '000';
     final listOfTextDetails = <String>[];
 
-    final reliseOfDate = model.movieDetails?.releaseDate;
+    final reliseOfDate = _movieDetails.releaseDate;
     if (reliseOfDate != null) {
-      listOfTextDetails.add(model.stringFromDate(reliseOfDate));
+      listOfTextDetails.add(stringFromDateFunc(reliseOfDate));
     }
-    final productCountries = model.movieDetails?.productionCountries;
-    if (productCountries != null && productCountries.isNotEmpty) {
+    final productCountries = _movieDetails.productionCountries;
+    if (productCountries.isNotEmpty) {
       listOfTextDetails.add('(${productCountries.first.iso})');
     }
-    final runtime = model.movieDetails?.runtime ?? 0;
+    final runtime = _movieDetails.runtime ?? 0;
     final durationOfMovie = Duration(minutes: runtime);
     final hours = durationOfMovie.inHours;
     final minutes = durationOfMovie.inMinutes.remainder(60);
-    listOfTextDetails.add('${hours} h ${minutes} m');
-    final genres = model.movieDetails?.genres;
-    if (genres != null && genres.isNotEmpty) {
+    listOfTextDetails.add('$hours h $minutes m');
+    final genres = _movieDetails.genres;
+    if (genres.isNotEmpty) {
       var listOfGenresName = <String>[];
       for (var genre in genres) {
         listOfGenresName.add(genre.name);
       }
       listOfTextDetails.add(listOfGenresName.join(', '));
     }
-    final overview = model.movieDetails?.overview ?? '';
-    final videoT = model.movieDetails?.videos.results.where(
+    final overview = _movieDetails.overview ?? '';
+    final videoT = _movieDetails.videos.results.where(
       (video) => video.site == 'YouTube' && video.type == 'Trailer',
     );
-    ;
-    final trailerKey = videoT?.isNotEmpty == true ? videoT?.first.key : null;
+
+    final trailerKey = videoT.isNotEmpty == true ? videoT.first.key : null;
     return Column(
       children: [
         Row(
@@ -61,7 +66,7 @@ class AboutMovieW extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: model.movieDetails?.title ?? '',
+                    text: _movieDetails.title,
                     style: TextStyle(color: TextCardWColor.mainColor),
                   ),
                   WidgetSpan(child: SizedBox(width: 10)),
