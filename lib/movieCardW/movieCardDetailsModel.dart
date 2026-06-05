@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show BuildContext;
+import 'package:flutter/material.dart' show BuildContext, IconData, Icons;
 import 'package:flutter/widgets.dart' show Localizations;
 import 'package:intl/intl.dart';
 import 'package:prog_lazy_f/domain/apiClient/accountApiClient.dart'
@@ -13,6 +13,24 @@ import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
 import 'package:prog_lazy_f/navigation/mainNavigation.dart';
 import 'package:prog_lazy_f/services/authService.dart' show AuthService;
 
+class MovieCardDetailsData {
+  String title = '';
+  bool isLoading = true;
+  String overview = '';
+  TopPosterImageData posterData = TopPosterImageData();
+}
+
+class TopPosterImageData {
+  final String? backdropPath;
+  final String? posterPath;
+  final IconData favoriteIcon;
+  TopPosterImageData({
+    this.favoriteIcon = Icons.favorite_border_outlined,
+    this.backdropPath,
+    this.posterPath,
+  });
+}
+
 class MovieCardDetailsModel extends ChangeNotifier {
   final _movieApiCl = MovieApiClient();
   final _accountApiCl = AccountApiClient();
@@ -20,19 +38,19 @@ class MovieCardDetailsModel extends ChangeNotifier {
   final _authService = AuthService();
   final int movieId;
   String _locale = '';
-  MovieDetailsType? _MovieDetailsType;
+  MovieDetailsType? _movieDetailsTypeDatas;
   late DateFormat _dateFormat;
   bool _isFavorite = false;
   bool get isFavorite => _isFavorite;
-  // Future<void>? Function()? onSessionExpired;
   MovieCardDetailsModel(this.movieId);
-  MovieDetailsType? get movieDetails => _MovieDetailsType;
-
+  MovieDetailsType? get movieDetails => _movieDetailsTypeDatas;
+  final dataCard = MovieCardDetailsData();
   Future<void> setupLocate(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
     if (_locale == locale) return;
     _locale = locale;
     _dateFormat = DateFormat.yMMMd(_locale);
+    updateData(null, false);
     await loadDetails(context);
   }
 
@@ -42,12 +60,12 @@ class MovieCardDetailsModel extends ChangeNotifier {
 
   Future<void> loadDetails(BuildContext context) async {
     try {
-      _MovieDetailsType = await _movieApiCl.movieDetails(movieId, _locale);
+      _movieDetailsTypeDatas = await _movieApiCl.movieDetails(movieId, _locale);
       final sessionId = await _sessionDataPr.getSessionId();
       if (sessionId != null) {
         _isFavorite = await _movieApiCl.isFavorire(movieId, sessionId);
       }
-      notifyListeners();
+      updateData(_movieDetailsTypeDatas, _isFavorite);
     } on ApiClientExeption catch (e) {
       _handleApiClientExeption(e, context);
     }
@@ -72,6 +90,25 @@ class MovieCardDetailsModel extends ChangeNotifier {
     } on ApiClientExeption catch (e) {
       _handleApiClientExeption(e, context);
     }
+  }
+
+  void updateData(MovieDetailsType? details, bool isFavorite) {
+    dataCard.title = details?.title ?? 'Loading...';
+    dataCard.isLoading = details == null;
+    if (details == null) {
+      notifyListeners();
+      return;
+    }
+    dataCard.overview = details.overview ?? '';
+    final iconData = isFavorite
+        ? Icons.favorite
+        : Icons.favorite_border_outlined;
+    dataCard.posterData = TopPosterImageData(
+      favoriteIcon: iconData,
+      backdropPath: details.backdropPath,
+      posterPath: details.posterPath,
+    );
+    notifyListeners();
   }
 
   void _handleApiClientExeption(

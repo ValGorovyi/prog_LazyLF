@@ -6,29 +6,30 @@ import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
 import 'package:provider/provider.dart';
 
 class TopPosterImageW extends StatelessWidget {
+  const TopPosterImageW({super.key});
+
   @override
   Widget build(BuildContext context) {
     // final _model = context.read<MovieCardDetailsModel>();
-    final movieDetails = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails,
+    final topPosterImageData = context.select(
+      (MovieCardDetailsModel model) => model.dataCard.posterData,
     );
-    final backdropPath = movieDetails?.backdropPath;
-    final posterPath = movieDetails?.posterPath;
+    final backdropPath = topPosterImageData.backdropPath;
+    final posterPath = topPosterImageData.posterPath;
     return AspectRatio(
       aspectRatio: 390 / 219,
       child: Stack(
         children: [
-          backdropPath != null
-              ? Image.network(ImageDownloader.imageUrl(backdropPath))
-              : SizedBox.shrink(),
-          Positioned(
-            top: 20,
-            left: 20,
-            bottom: 20,
-            child: posterPath != null
-                ? Image.network(ImageDownloader.imageUrl(posterPath))
-                : SizedBox.shrink(),
-          ),
+          if (backdropPath != null)
+            Image.network(ImageDownloader.imageUrl(backdropPath)),
+
+          if (posterPath != null)
+            Positioned(
+              top: 20,
+              left: 20,
+              bottom: 20,
+              child: Image.network(ImageDownloader.imageUrl(posterPath)),
+            ),
           Positioned(top: 6, right: 10, child: _LikeMovieW()),
         ],
       ),
@@ -39,17 +40,16 @@ class TopPosterImageW extends StatelessWidget {
 class _LikeMovieW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final toggleFavoriteFunc = context.select(
-      (MovieCardDetailsModel model) => model.toggleFavorite,
-    );
-    final isFavorite = context.select(
-      (MovieCardDetailsModel model) => model.isFavorite,
+    final toggleFavoriteFunc = context
+        .read<MovieCardDetailsModel>()
+        .toggleFavorite;
+
+    final iconDataImage = context.select(
+      (MovieCardDetailsModel model) => model.dataCard.posterData.favoriteIcon,
     );
     return IconButton(
       onPressed: () => toggleFavoriteFunc(context),
-      icon: Icon(
-        isFavorite == true ? Icons.favorite : Icons.favorite_border_outlined,
-      ),
+      icon: Icon(iconDataImage),
     );
   }
 }

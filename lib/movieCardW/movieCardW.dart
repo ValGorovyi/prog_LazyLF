@@ -22,7 +22,9 @@ class _MovieCardWState extends State<MovieCardW> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<MovieCardDetailsModel>().setupLocate(context);
+    Future.microtask(
+      () => context.read<MovieCardDetailsModel>().setupLocate(context),
+    );
   }
 
   @override
@@ -43,19 +45,19 @@ class _AppTitleInDetailsW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleText = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails?.title,
+      (MovieCardDetailsModel model) => model.dataCard.title,
     );
-    return Text(titleText ?? 'Loading...');
+    return Text(titleText);
   }
 }
 
 class _BodyCardW extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final movieDetails = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails,
+    final isLoadingProcess = context.select(
+      (MovieCardDetailsModel model) => model.dataCard.isLoading,
     );
-    if (movieDetails == null) {
+    if (isLoadingProcess) {
       return const Center(child: CircularProgressIndicator());
     }
     return ListView(
