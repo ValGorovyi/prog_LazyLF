@@ -8,15 +8,16 @@ import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
 import 'package:provider/provider.dart';
 
 class ActorScrolingMovieW extends StatelessWidget {
+  const ActorScrolingMovieW({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final casts = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails?.credits.cast,
+    final data = context.select(
+      (MovieCardDetailsModel model) => model.dataCard.actotsData,
     );
-    ;
 
-    if (casts == null || casts.isEmpty) return SizedBox.fromSize();
-    final lengthBuilder = casts.length;
+    if (data.isEmpty) return SizedBox.fromSize();
+    final lengthBuilder = data.length;
     return ColoredBox(
       color: Colors.white70,
       child: Column(
@@ -68,13 +69,9 @@ class _ActorItemW extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final model = UniversalInheritNitifier.read<MovieCardDetailsModel>(context);
-    // final actorItemData = model!.movieDetails!.credits.cast[actorIndex];
-    final actorItemData = context.select(
-      (MovieCardDetailsModel model) =>
-          model.movieDetails?.credits.cast[actorIndex],
-    );
-    final actorImagePath = actorItemData?.profilePath;
+    final model = context.read<MovieCardDetailsModel>();
+    final actorItemData = model.dataCard.actotsData[actorIndex];
+    final actorImagePath = actorItemData.profilePath;
     return Padding(
       padding: EdgeInsetsGeometry.all(8),
       child: DecoratedBox(
@@ -95,20 +92,19 @@ class _ActorItemW extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: Column(
             children: [
-              actorImagePath != null
-                  ? Image.network(
-                      ImageDownloader.imageUrl(actorImagePath),
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.fitWidth,
-                    )
-                  : SizedBox.shrink(),
+              if (actorImagePath != null)
+                Image.network(
+                  ImageDownloader.imageUrl(actorImagePath),
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.fitWidth,
+                ),
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Column(
                   children: [
-                    Text(actorItemData?.name ?? '---', maxLines: 1),
-                    Text(actorItemData?.character ?? '!!!', maxLines: 3),
+                    Text(actorItemData.name, maxLines: 1),
+                    Text(actorItemData.character, maxLines: 3),
                   ],
                 ),
               ),

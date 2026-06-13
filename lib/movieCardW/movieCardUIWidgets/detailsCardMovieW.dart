@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/domain/entity/movieDetailsCredits.dart'
     show Employee;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
-    show MovieCardDetailsModel;
+    show MovieCardDetailsModel, DetailsEmployeeData;
 // import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'
 //     show UniversalInheritNitifier;
 import 'package:provider/provider.dart';
@@ -14,28 +14,15 @@ class DetailsCardMovieW extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-    //   context,
-    // );
     var crew = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails?.credits.crew,
+      (MovieCardDetailsModel model) => model.dataCard.employeeData,
     );
-    if (crew == null) return SizedBox.shrink();
-    // var crew = model.movieDetails?.credits.crew;
-    if (crew.isEmpty) return SizedBox.shrink();
-    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
-
-    var crewChunks = <List<Employee>>[];
-    for (var i = 0; i < crew.length; i += 2) {
-      crewChunks.add(
-        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
-      );
-    }
+    if (crew.isEmpty) SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: crewChunks
+        children: crew
             .map(
               (chank) => Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
@@ -49,27 +36,14 @@ class DetailsCardMovieW extends StatelessWidget {
 }
 
 class _CrewWidget extends StatelessWidget {
-  final List<Employee> employes;
+  final List<DetailsEmployeeData> employes;
   const _CrewWidget({required this.employes});
   @override
   Widget build(BuildContext context) {
-    // final model = UniversalInheritNitifier.watch<MovieCardDetailsModel>(
-    //   context,
-    // );
     var crew = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails?.credits.crew,
+      (MovieCardDetailsModel model) => model.dataCard.actotsData,
     );
-    if (crew == null) return SizedBox.shrink();
-    // var crew = model.movieDetails?.credits.crew;
-    if (crew.isEmpty) return SizedBox.shrink();
-    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
 
-    var crewChunks = <List<Employee>>[];
-    for (var i = 0; i < crew.length; i += 2) {
-      crewChunks.add(
-        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
-      );
-    }
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: employes
@@ -80,7 +54,7 @@ class _CrewWidget extends StatelessWidget {
 }
 
 class _ColumnEmployeeW extends StatelessWidget {
-  final Employee employee;
+  final DetailsEmployeeData employee;
   const _ColumnEmployeeW({required this.employee});
 
   @override

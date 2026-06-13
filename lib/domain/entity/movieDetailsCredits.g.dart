@@ -33,7 +33,7 @@ Actor _$ActorFromJson(Map<String, dynamic> json) => Actor(
   popularity: (json['popularity'] as num).toDouble(),
   profilePath: json['profile_path'] as String?,
   castId: (json['cast_id'] as num).toInt(),
-  character: json['character'] as String?,
+  character: json['character'] as String,
   creditId: json['credit_id'] as String,
   order: (json['order'] as num).toInt(),
 );

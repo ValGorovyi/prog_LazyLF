@@ -13,9 +13,10 @@ class CircularProgressCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _voteAverage = context.select(
-      (MovieCardDetailsModel model) => model.movieDetails?.voteAverage,
+      (MovieCardDetailsModel model) =>
+          model.dataCard.aboutScoreData.voteAverage,
     );
-    var statistickInPercent = _voteAverage ?? 0;
+    var statistickInPercent = _voteAverage;
     statistickInPercent = statistickInPercent * 10;
     return Center(
       child: SizedBox(
