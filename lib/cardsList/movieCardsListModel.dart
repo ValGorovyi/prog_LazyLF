@@ -9,6 +9,8 @@ import 'package:prog_lazy_f/library/paginator.dart';
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'
     show NavigationRoutesNames;
 import 'package:prog_lazy_f/services/movieService.dart' show MovieService;
+import 'package:prog_lazy_f/universalInherit/localizedStorageModel.dart'
+    show LocalizedStorageModel;
 
 class MovieListItemRowData {
   final String title;
@@ -30,16 +32,14 @@ class MovieCardsListModel extends ChangeNotifier {
   final _movieService = MovieService();
   late final Paginator<MovieType> _popularMoviePaginator;
   late final Paginator<MovieType> _searchMoviePaginator;
-  // final _apiCl = MovieApiClient();
   Timer? searchDebounce;
-  String _locale = '';
+  // String _locale = '';
+  final _localStorageM = LocalizedStorageModel();
 
   var _movies = <MovieListItemRowData>[];
   List<MovieListItemRowData> get movies => List.unmodifiable(_movies);
   late DateFormat _dateFormat;
-  // late int _currentPage;
-  // late int _totalPage;
-  // var _isLoadingInProgress = false;
+
   String? _searchQueryText;
   bool get isSearchMode {
     final searchQ = _searchQueryText;
@@ -50,7 +50,7 @@ class MovieCardsListModel extends ChangeNotifier {
     _popularMoviePaginator = Paginator<MovieType>((pageNumber) async {
       final resultOfResp = await _movieService.popularMovie(
         pageNumber,
-        _locale,
+        _localStorageM.localeTag,
       );
       return PaginatorLoadResult(
         data: resultOfResp.movies,
@@ -61,7 +61,7 @@ class MovieCardsListModel extends ChangeNotifier {
     _searchMoviePaginator = Paginator<MovieType>((pageNumber) async {
       final resultOfResp = await _movieService.searchMovie(
         pageNumber,
-        _locale,
+        _localStorageM.localeTag,
         _searchQueryText ?? '',
       );
       return PaginatorLoadResult(
@@ -72,16 +72,10 @@ class MovieCardsListModel extends ChangeNotifier {
     });
   }
 
-  // String stringFormatDate(DateTime? date) {
-  //   if (date != null) return _dateFormat.format(date);
-  //   return '';
-  // }
+  Future<void> setupLocate(Locale locale) async {
+    if (!_localStorageM.updateLocale(locale)) return;
 
-  Future<void> setupLocate(BuildContext context) async {
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    if (_locale == locale) return;
-    _locale = locale;
-    _dateFormat = DateFormat.yMMMd(_locale);
+    _dateFormat = DateFormat.yMMMd(_localStorageM.localeTag);
     await _resetList();
   }
 

@@ -22,8 +22,9 @@ class _MovieCardWState extends State<MovieCardW> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final locale = Localizations.localeOf(context);
     Future.microtask(
-      () => context.read<MovieCardDetailsModel>().setupLocate(context),
+      () => context.read<MovieCardDetailsModel>().setupLocate(context, locale),
     );
   }
 

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show BuildContext, IconData, Icons;
+import 'package:flutter/material.dart'
+    show BuildContext, IconData, Icons, Locale;
 import 'package:flutter/widgets.dart' show Localizations;
 import 'package:intl/intl.dart';
 
@@ -11,6 +12,8 @@ import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
 import 'package:prog_lazy_f/navigation/mainNavigation.dart';
 import 'package:prog_lazy_f/services/authService.dart' show AuthService;
 import 'package:prog_lazy_f/services/movieService.dart' show MovieService;
+import 'package:prog_lazy_f/universalInherit/localizedStorageModel.dart'
+    show LocalizedStorageModel;
 
 class MovieCardDetailsData {
   String title = '';
@@ -88,17 +91,16 @@ class MovieCardDetailsModel extends ChangeNotifier {
   final _movieService = MovieService();
   final _authService = AuthService();
   final int movieId;
-  String _locale = '';
+  final _localStorageM = LocalizedStorageModel();
   late DateFormat _dateFormat;
 
   MovieCardDetailsModel(this.movieId);
   final dataCard = MovieCardDetailsData();
 
-  Future<void> setupLocate(BuildContext context) async {
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    if (_locale == locale) return;
-    _locale = locale;
-    _dateFormat = DateFormat.yMMMd(_locale);
+  Future<void> setupLocate(BuildContext context, Locale locale) async {
+    if (!_localStorageM.updateLocale(locale)) return;
+
+    _dateFormat = DateFormat.yMMMd(_localStorageM.localeTag);
     updateData(null, false);
     await loadDetails(context);
   }
@@ -110,7 +112,7 @@ class MovieCardDetailsModel extends ChangeNotifier {
   Future<void> loadDetails(BuildContext context) async {
     try {
       final details = await _movieService.loadDetails(
-        locale: _locale,
+        locale: _localStorageM.localeTag,
         movieId: movieId,
       );
 

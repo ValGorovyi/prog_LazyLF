@@ -17,7 +17,8 @@ class _MovieCardsState extends State<MovieCards> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<MovieCardsListModel>().setupLocate(context);
+    final locale = Localizations.localeOf(context);
+    context.read<MovieCardsListModel>().setupLocate(locale);
   }
 
   // void tabToMovie(index) {
