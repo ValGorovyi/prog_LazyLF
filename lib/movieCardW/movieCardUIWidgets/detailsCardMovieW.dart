@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prog_lazy_f/domain/entity/movieDetailsCredits.dart'
-    show Employee;
+
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
     show MovieCardDetailsModel, DetailsEmployeeData;
 // import 'package:prog_lazy_f/universalInherit/universalInheritNotifier.dart'

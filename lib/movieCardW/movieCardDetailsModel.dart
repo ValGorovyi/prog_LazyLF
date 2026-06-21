@@ -3,16 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show BuildContext, IconData, Icons;
 import 'package:flutter/widgets.dart' show Localizations;
 import 'package:intl/intl.dart';
-import 'package:prog_lazy_f/domain/apiClient/accountApiClient.dart'
-    show AccountApiClient, MediaType;
-import 'package:prog_lazy_f/domain/apiClient/movieApiClient.dart';
+
 import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart'
     show ApiClientExeptionType, ApiClientExeption;
-import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
 import 'package:prog_lazy_f/domain/entity/movieDetails.dart'
     show MovieDetailsType;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart';
 import 'package:prog_lazy_f/services/authService.dart' show AuthService;
+import 'package:prog_lazy_f/services/movieService.dart' show MovieService;
 
 class MovieCardDetailsData {
   String title = '';
@@ -87,9 +85,7 @@ class ActorScrolinMoviegData {
 }
 
 class MovieCardDetailsModel extends ChangeNotifier {
-  final _movieApiCl = MovieApiClient();
-  final _accountApiCl = AccountApiClient();
-  final _sessionDataPr = SessionDataProvider();
+  final _movieService = MovieService();
   final _authService = AuthService();
   final int movieId;
   String _locale = '';
@@ -97,6 +93,7 @@ class MovieCardDetailsModel extends ChangeNotifier {
 
   MovieCardDetailsModel(this.movieId);
   final dataCard = MovieCardDetailsData();
+
   Future<void> setupLocate(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
     if (_locale == locale) return;
@@ -112,34 +109,26 @@ class MovieCardDetailsModel extends ChangeNotifier {
 
   Future<void> loadDetails(BuildContext context) async {
     try {
-      final movieDetails = await _movieApiCl.movieDetails(movieId, _locale);
-      final sessionId = await _sessionDataPr.getSessionId();
-      var isFavorire = false;
-      if (sessionId != null) {
-        isFavorire = await _movieApiCl.isFavorire(movieId, sessionId);
-      }
-      updateData(movieDetails, isFavorire);
+      final details = await _movieService.loadDetails(
+        locale: _locale,
+        movieId: movieId,
+      );
+
+      updateData(details.details, details.isFavorite);
     } on ApiClientExeption catch (e) {
       _handleApiClientExeption(e, context);
     }
   }
 
   Future<void> toggleFavorite(BuildContext context) async {
-    final sessionId = await _sessionDataPr.getSessionId();
-    final accId = await _sessionDataPr.getAccountId();
-    if (accId == null || sessionId == null) return;
-
     dataCard.posterData = dataCard.posterData.copyWith(
       isFavorite: !dataCard.posterData.isFavorite,
     );
     notifyListeners();
     try {
-      await _accountApiCl.markAsFavorite(
-        accountId: accId,
-        sessionId: sessionId,
-        mediaType: MediaType.Movie,
-        mediaId: movieId,
-        favorite: dataCard.posterData.isFavorite,
+      await _movieService.updateFavorite(
+        isFavorite: dataCard.posterData.isFavorite,
+        movieId: movieId,
       );
     } on ApiClientExeption catch (e) {
       _handleApiClientExeption(e, context);

@@ -7,6 +7,8 @@ import 'package:prog_lazy_f/domain/entity/movieDetailsVideoT.dart';
 
 part 'movieDetails.g.dart';
 
+//from server
+
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MovieDetailsType {
   final bool adult;
