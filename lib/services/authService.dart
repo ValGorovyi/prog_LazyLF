@@ -1,6 +1,9 @@
-import 'package:prog_lazy_f/domain/apiClient/accountApiClient.dart';
-import 'package:prog_lazy_f/domain/apiClient/authApiClient.dart';
-import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart';
+import 'package:prog_lazy_f/domain/apiClient/accountApiClient.dart'
+    show AccountApiClient;
+import 'package:prog_lazy_f/domain/apiClient/authApiClient.dart'
+    show AuthApiClient;
+import 'package:prog_lazy_f/domain/apiClient/dataProvider.dart'
+    show SessionDataProvider;
 
 class AuthService {
   final _sessionDataProvider = SessionDataProvider();
