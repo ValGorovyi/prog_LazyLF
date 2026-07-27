@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/movieCardW/circularProgressIndicator/circularProgressIndicator.dart'
     show CircularProgressCustom;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'
-    show AboutMovieNameData, MovieCardDetailsModel;
+    show MovieCardDetailsModel;
 import 'package:prog_lazy_f/movieCardW/movieCardUIWidgets/textColorRGBA.dart'
     show TextCardWColor;
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'

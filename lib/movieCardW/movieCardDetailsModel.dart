@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     show BuildContext, IconData, Icons, Locale;
-import 'package:flutter/widgets.dart' show Localizations;
 import 'package:intl/intl.dart';
 
 import 'package:prog_lazy_f/domain/apiClient/apiClientExeption.dart'

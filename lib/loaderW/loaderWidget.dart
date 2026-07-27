@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:prog_lazy_f/loaderW/loaderModel.dart';
+import 'package:prog_lazy_f/loaderW/loaderCubit.dart';
 import 'package:prog_lazy_f/navigation/mainNavigation.dart'
     show NavigationRoutesNames;
 

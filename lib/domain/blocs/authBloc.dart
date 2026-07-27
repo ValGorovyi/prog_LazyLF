@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:prog_lazy_f/domain/apiClient/accountApiClient.dart';
 import 'package:prog_lazy_f/domain/apiClient/authApiClient.dart';

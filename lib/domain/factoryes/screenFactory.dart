@@ -6,8 +6,8 @@ import 'package:prog_lazy_f/cardsList/cardsList.dart' show MovieCards;
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
     show MovieCardsListModel;
 import 'package:prog_lazy_f/domain/blocs/authBloc.dart';
-import 'package:prog_lazy_f/loaderW/loaderModel.dart'
-    show LoaderVieWModel, LoaderViewCubit, LoaderVievCubitState;
+import 'package:prog_lazy_f/loaderW/loaderCubit.dart'
+    show LoaderViewCubit, LoaderVievCubitState;
 import 'package:prog_lazy_f/loaderW/loaderWidget.dart' show LoaderWidget;
 import 'package:prog_lazy_f/mainScreenW/mainScreenW.dart' show MainScreenW;
 import 'package:prog_lazy_f/movieCardW/movieCardDetailsModel.dart'

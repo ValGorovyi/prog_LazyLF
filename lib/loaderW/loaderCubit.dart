@@ -1,11 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:prog_lazy_f/domain/blocs/authBloc.dart';
-
-import 'package:prog_lazy_f/navigation/mainNavigation.dart';
-import 'package:prog_lazy_f/services/authService.dart' show AuthService;
 
 enum LoaderVievCubitState { authorized, notAuthorized, unknown }
 
@@ -15,11 +11,11 @@ class LoaderViewCubit extends Cubit<LoaderVievCubitState> {
   LoaderViewCubit(LoaderVievCubitState initialState, this.authBloc)
     : super(initialState) {
     authBloc.add(AuthCheckStatusEvent());
-    onState(authBloc.state);
-    authBlocSubscription = authBloc.stream.listen(onState);
+    _onState(authBloc.state);
+    authBlocSubscription = authBloc.stream.listen(_onState);
   }
 
-  void onState(AuthState state) {
+  void _onState(AuthState state) {
     if (state is AuthAuthorizedState) {
       emit(LoaderVievCubitState.authorized);
     } else if (state is AuthUnauthorizedState) {
