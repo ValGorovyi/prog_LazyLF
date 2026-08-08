@@ -39,10 +39,10 @@ class AuthErrorState extends AuthState {
   AuthErrorState({required this.error});
 
   @override
-  bool operator ==(covariant AuthErrorState other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other.error == error;
+    return other is AuthErrorState && other.error == error;
   }
 
   @override

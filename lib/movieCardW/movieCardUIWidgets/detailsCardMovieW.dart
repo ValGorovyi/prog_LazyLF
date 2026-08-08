@@ -39,9 +39,9 @@ class _CrewWidget extends StatelessWidget {
   const _CrewWidget({required this.employes});
   @override
   Widget build(BuildContext context) {
-    var crew = context.select(
-      (MovieCardDetailsModel model) => model.dataCard.actotsData,
-    );
+    // var crew = context.select(
+    //   (MovieCardDetailsModel model) => model.dataCard.actotsData,
+    // );
 
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceAround,

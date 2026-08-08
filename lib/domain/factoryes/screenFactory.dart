@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:prog_lazy_f/authW/authModel.dart' show AuthViewModel;
+import 'package:prog_lazy_f/authW/authCubit.dart'
+    show AuthViewCubit, AuthViewCubitExpectationState;
 import 'package:prog_lazy_f/authW/authW.dart' show AuthorizW;
 import 'package:prog_lazy_f/cardsList/cardsList.dart' show MovieCards;
 import 'package:prog_lazy_f/cardsList/movieCardsListModel.dart'
@@ -32,10 +33,16 @@ class ScreenFactory {
   }
 
   Widget creareAuthW() {
-    return ChangeNotifierProvider(
-      create: (_) => AuthViewModel(),
-      child: AuthorizW(),
+    final authBloc = _authBloc ?? AuthBloc(AuthCheckStatusInProgressState());
+    _authBloc = authBloc;
+    return BlocProvider<AuthViewCubit>(
+      create: (_) => AuthViewCubit(AuthViewCubitExpectationState(), authBloc),
+      child: const AuthorizW(),
     );
+    // return ChangeNotifierProvider(
+    //   create: (_) => AuthViewModel(),
+    //   child: AuthorizW(),
+    // );
   }
 
   Widget createMainScreenW() {
